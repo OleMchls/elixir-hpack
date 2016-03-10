@@ -6,6 +6,14 @@ elixir:
 before_script:
   - mix dialyzer.plt
 
+cache:
+  directories:
+  - .plts
+
+before_script:
+  - mkdir -p .plts
+  - if [ ! -a ".plts/local.plt" ]; then mix dialyzer.plt; fi
+
 script:
   - mix test
   - mix dialyzer --check_plt
