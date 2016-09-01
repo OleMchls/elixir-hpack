@@ -3,11 +3,12 @@ defmodule HPack do
     Implementation of the [HPack](https://http2.github.io/http2-spec/compression.html) protocol, a compression format for efficiently representing HTTP header fields, to be used in HTTP/2.
   """
 
-  @type header :: {String.t, String.t}
-
   use Bitwise
   alias HPack.Huffman
   alias HPack.Table
+
+  @type header :: {String.t, String.t}
+  @type header_block_fragment :: String.t
 
   @doc """
   Encodes a list of headers into a `header block fragment` as specified in RFC 7541.
@@ -21,6 +22,7 @@ defmodule HPack do
     << 0b10000010 >>
 
   """
+  @spec encode([header], Table.t) :: header_block_fragment
   def encode(headers, table) when is_list(headers), do: encode(headers, << >>, table)
 
   defp encode([], hbf, _), do: hbf
@@ -72,7 +74,7 @@ defmodule HPack do
     [{":method", "GET"}]
 
   """
-  @spec decode(String.t, pid) :: [header]
+  @spec decode(header_block_fragment, Table.t) :: [header]
   def decode(hbf, table) do
     parse(hbf, [], table)
   end
