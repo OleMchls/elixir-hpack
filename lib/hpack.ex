@@ -130,22 +130,6 @@ defmodule HPack do
 
   #   0   1   2   3   4   5   6   7
   # +---+---+---+---+---+---+---+---+
-  # | 0 | 0 | 0 | 0 |  Index (4+)   |
-  # +---+---+-----------------------+
-  # | H |     Value Length (7+)     |
-  # +---+---------------------------+
-  # | Value String (Length octets)  |
-  # +-------------------------------+
-  # Figure 8: Literal Header Field without Indexing — Indexed Name
-  defp parse(<< 0::4, rest::bitstring >>, headers, table) do
-    { index, rest } = parse_int4(rest)
-    { value, more_headers } = parse_string(rest)
-    { header, _ } = Table.lookup(index, table)
-    parse(more_headers, [{ header, value } | headers], table)
-  end
-
-  #   0   1   2   3   4   5   6   7
-  # +---+---+---+---+---+---+---+---+
   # | 0 | 0 | 0 | 0 |       0       |
   # +---+---+-----------------------+
   # | H |     Name Length (7+)      |
@@ -161,6 +145,22 @@ defmodule HPack do
     { name, rest } = parse_string(rest)
     { value, more_headers } = parse_string(rest)
     parse(more_headers, [{name, value} | headers], table)
+  end
+
+  #   0   1   2   3   4   5   6   7
+  # +---+---+---+---+---+---+---+---+
+  # | 0 | 0 | 0 | 0 |  Index (4+)   |
+  # +---+---+-----------------------+
+  # | H |     Value Length (7+)     |
+  # +---+---------------------------+
+  # | Value String (Length octets)  |
+  # +-------------------------------+
+  # Figure 8: Literal Header Field without Indexing — Indexed Name
+  defp parse(<< 0::4, rest::bitstring >>, headers, table) do
+    { index, rest } = parse_int4(rest)
+    { value, more_headers } = parse_string(rest)
+    { header, _ } = Table.lookup(index, table)
+    parse(more_headers, [{ header, value } | headers], table)
   end
 
   #   0   1   2   3   4   5   6   7
