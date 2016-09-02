@@ -5,6 +5,7 @@ defmodule HPack do
 
   @type header :: {String.t, String.t}
 
+  require Logger
   use Bitwise
   alias HPack.Huffman
   alias HPack.Table
@@ -85,7 +86,9 @@ defmodule HPack do
   # +---+---------------------------+
   #  Figure 5: Indexed Header Field
   defp parse(<< 1::1, rest::bitstring >>, headers, table) do
+    Logger.debug "Indexed HF"
     { index, rest } = parse_int7(rest)
+    IO.inspect(Table.lookup(index, table))
     parse(rest, [Table.lookup(index, table) | headers], table)
   end
 
@@ -103,9 +106,11 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 7: Literal Header Field with Incremental Indexing — New Name
   defp parse(<< 0::1, 1::1, 0::6, rest::binary>>, headers, table) do
+    Logger.debug "Literal HF with Incremental Indexing - New"
     { name, rest } = parse_string(rest)
     { value, more_headers } = parse_string(rest)
     Table.add({name, value}, table)
+    Logger.debug {name, value}
     parse(more_headers, [{name, value} | headers], table)
   end
 
@@ -119,9 +124,13 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 6: Literal Header Field with Incremental Indexing — Indexed Name
   defp parse(<< 0::1, 1::1, rest::bitstring >>, headers, table) do
+    Logger.debug "Literal HF with Incremental Indexing - Indexed"
+    IO.inspect rest, base: :binary
     { index, rest } = parse_int6(rest)
+    IO.inspect {index, rest}
     { value, more_headers } = parse_string(rest)
     { header, _ } = Table.lookup(index, table)
+    IO.inspect {header, value}
     Table.add({header, value}, table)
     parse(more_headers, [ {header, value} | headers], table)
   end
@@ -136,9 +145,13 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 8: Literal Header Field without Indexing — Indexed Name
   defp parse(<< 0::4, rest::bitstring >>, headers, table) do
+    Logger.debug "Literal HF without Incremental Indexing - Indexed"
+    IO.inspect rest, base: :binary
     { index, rest } = parse_int4(rest)
+    IO.inspect {index, rest}
     { value, more_headers } = parse_string(rest)
     { header, _ } = Table.lookup(index, table)
+    IO.inspect {header, value}
     parse(more_headers, [{ header, value } | headers], table)
   end
 
@@ -156,8 +169,10 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 9: Literal Header Field without Indexing — New Name
   defp parse(<< 0::4, 0::4, rest::binary >>, headers, table) do
+    Logger.debug "Literal HF with Indexing - New"
     { name, rest } = parse_string(rest)
     { value, more_headers } = parse_string(rest)
+    Logger.debug {name, value}
     parse(more_headers, [{name, value} | headers], table)
   end
 
@@ -175,8 +190,10 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 11: Literal Header Field Never Indexed — New Name
   defp parse(<< 0::3, 1::1, 0::4, rest::binary >>, headers, table) do
+    Logger.debug "Literal HF with Never Indexed - New"
     { name, rest } = parse_string(rest)
     { value, more_headers } = parse_string(rest)
+    Logger.debug {name, value}
     parse(more_headers, [{name, value} | headers], table)
   end
 
@@ -190,9 +207,11 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 10: Literal Header Field Never Indexed — Indexed Name
   defp parse(<< 0::3, 1::1, rest::bitstring >>, headers, table) do
+    Logger.debug "Literal HF with Never Indexed - Indexed"
     { index, rest } = parse_int4(rest)
     { value, more_headers } = parse_string(rest)
     { header, _ } = Table.lookup(index, table)
+    Logger.debug {header, value}
     parse(more_headers, [{ header, value } | headers], table)
   end
 
