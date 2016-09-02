@@ -127,8 +127,9 @@ defmodule HPack do
     Logger.debug "Literal HF with Incremental Indexing - Indexed"
     IO.inspect rest, base: :binary
     { index, rest } = parse_int6(rest)
-    IO.inspect {index, rest}
+    IO.inspect {index, rest}, base: :binary
     { value, more_headers } = parse_string(rest)
+    IO.inspect more_headers, base: :binary
     { header, _ } = Table.lookup(index, table)
     IO.inspect {header, value}
     Table.add({header, value}, table)
@@ -148,7 +149,7 @@ defmodule HPack do
     Logger.debug "Literal HF without Incremental Indexing - Indexed"
     IO.inspect rest, base: :binary
     { index, rest } = parse_int4(rest)
-    IO.inspect {index, rest}
+    IO.inspect {index, rest}, base: :binary
     { value, more_headers } = parse_string(rest)
     { header, _ } = Table.lookup(index, table)
     IO.inspect {header, value}
@@ -228,12 +229,19 @@ defmodule HPack do
 
   defp parse_string(<< 0::1, rest::bitstring >>) do
     { length, rest } = parse_int7(rest)
+    Logger.debug "parse_string leading 0 length #{length}"
+    IO.inspect rest, base: :binary
     << value::binary - size(length), rest::binary >> = rest
+    Logger.debug "after deconstructing"
     { value, rest }
   end
   defp parse_string(<< 1::1, rest::bitstring >>) do
     { length, rest } = parse_int7(rest)
+    Logger.debug "parse_string leading 1 length #{length}"
+    IO.inspect rest, base: :binary, limit: 10_000
     << value::binary - size(length), rest::binary >> = rest
+    Logger.debug "after deconstructing"
+    IO.inspect rest, base: :binary, limit: 10_000
     { Huffman.decode(value), rest }
   end
 
