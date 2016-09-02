@@ -8,7 +8,7 @@ defmodule HPack do
   alias HPack.Table
 
   @type header :: {String.t, String.t}
-  @type header_block_fragment :: String.t
+  @type header_block_fragment :: binary
 
   @doc """
   Encodes a list of headers into a `header block fragment` as specified in RFC 7541.

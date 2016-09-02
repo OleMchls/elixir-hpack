@@ -14,7 +14,7 @@ defmodule HPack.Huffman do
       "hello"
 
   """
-  @spec decode(String.t) :: String.t
+  @spec decode(binary) :: String.t
   def decode(encoded) do
     dec(encoded, bit_size(encoded), <<>>)
   end
@@ -29,7 +29,7 @@ defmodule HPack.Huffman do
       iex> HPack.Huffman.encode("hello")
       <<0x9c, 0xb4, 0x50, 0x7f>>
   """
-  @spec encode(String.t) :: String.t
+  @spec encode(String.t) :: binary
   def encode(string) do
     enc(string, <<>>)
   end
