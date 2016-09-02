@@ -75,6 +75,6 @@ defmodule HPackTest do
     117, 247, 228, 145, 246, 86, 19, 141, 127, 63, 0, 137, 25, 8, 90, 210, 181,
     131, 170, 98, 163, 132, 143, 210, 74, 143>>
     {:ok, pid} = HPack.Table.start_link(4_096)
-    assert [head | tail] = HPack.decode(data, pid)
+    assert [_head | _tail] = HPack.decode(data, pid)
   end
 end
