@@ -66,6 +66,7 @@ defmodule HPackTest do
   hbf size (retrieved binary): 108
 
   """
+  @tag :regression
   test "decode nginx 200 OK" do
     data = <<136, 118, 137, 170, 99, 85, 229, 128, 174, 16, 174, 207, 97, 150,
     208, 122, 190, 148, 0, 84, 134, 217, 148, 16, 2, 226, 130, 102, 224, 69,
