@@ -8,7 +8,8 @@ defmodule HPack.Mixfile do
      package: package,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     dialyzer: [plt_file: ".plts/.local.plt"]]
   end
 
   # Configuration for the OTP application

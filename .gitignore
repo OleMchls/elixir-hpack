@@ -5,3 +5,4 @@ erl_crash.dump
 *.ez
 .mix_tasks
 /doc
+.plts
