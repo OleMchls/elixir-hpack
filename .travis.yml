@@ -3,8 +3,11 @@ language: elixir
 elixir:
   - 1.3.2
 
+cache:
+  directories:
+    - .plts
+
 before_script:
-  - env
   - mix dialyzer.plt
 
 script:
