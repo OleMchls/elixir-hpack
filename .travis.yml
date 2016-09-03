@@ -4,6 +4,7 @@ elixir:
   - 1.3.2
 
 before_script:
+  - env
   - mix dialyzer.plt
 
 script:
