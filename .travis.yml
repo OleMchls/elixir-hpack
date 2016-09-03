@@ -8,7 +8,7 @@ cache:
     - .plts
 
 before_script:
-  - [[ -f .plts/local.plt ]] || mix dialyzer.plt
+  - "[[ -f .plts/local.plt ]] || mix dialyzer.plt"
 
 script:
   - mix test
