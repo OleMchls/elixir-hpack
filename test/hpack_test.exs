@@ -66,7 +66,6 @@ defmodule HPackTest do
   hbf size (retrieved binary): 108
 
   """
-  @tag :regression
   test "decode nginx 200 OK" do
     data = <<136, 118, 137, 170, 99, 85, 229, 128, 174, 16, 174, 207, 97, 150,
     208, 122, 190, 148, 0, 84, 134, 217, 148, 16, 2, 226, 130, 102, 224, 69,
@@ -76,6 +75,6 @@ defmodule HPackTest do
     117, 247, 228, 145, 246, 86, 19, 141, 127, 63, 0, 137, 25, 8, 90, 210, 181,
     131, 170, 98, 163, 132, 143, 210, 74, 143>>
     {:ok, pid} = HPack.Table.start_link(4_096)
-    assert [_head | _tail] = HPack.decode(data, pid)
+    assert [head | tail] = HPack.decode(data, pid)
   end
 end

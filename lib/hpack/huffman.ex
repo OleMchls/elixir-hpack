@@ -14,7 +14,7 @@ defmodule HPack.Huffman do
       "hello"
 
   """
-  @spec decode(binary) :: String.t
+  @spec decode(String.t) :: String.t
   def decode(encoded) do
     dec(encoded, bit_size(encoded), <<>>)
   end
@@ -29,7 +29,7 @@ defmodule HPack.Huffman do
       iex> HPack.Huffman.encode("hello")
       <<0x9c, 0xb4, 0x50, 0x7f>>
   """
-  @spec encode(String.t) :: binary
+  @spec encode(String.t) :: String.t
   def encode(string) do
     enc(string, <<>>)
   end
@@ -51,6 +51,7 @@ defmodule HPack.Huffman do
   defp enc(<<253>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x7ffffef::27 >>)
   defp enc(<<254>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x7fffff0::27 >>)
   defp enc(<<255>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x3ffffee::26 >>)
+  defp enc(<<256>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x3fffffff::30 >>)
   defp enc(<<207>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x1ffffed::25 >>)
   defp enc(<<208>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x7fff2::19 >>)
   defp enc(<<209>> <> rest, bin), do: enc(rest, << bin::bitstring, 0x1fffe3::21 >>)
@@ -319,6 +320,7 @@ defmodule HPack.Huffman do
   defp dec(<< 0x7ffffef::27, rest::bitstring >>, length, result), do: dec(rest, length - 27, result <> <<253>>)
   defp dec(<< 0x7fffff0::27, rest::bitstring >>, length, result), do: dec(rest, length - 27, result <> <<254>>)
   defp dec(<< 0x3ffffee::26, rest::bitstring >>, length, result), do: dec(rest, length - 26, result <> <<255>>)
+  defp dec(<< 0x3fffffff::30, rest::bitstring >>, length, result), do: dec(rest, length - 30, result <> <<256>>)
   defp dec(<< 0x1ffffed::25, rest::bitstring >>, length, result), do: dec(rest, length - 25, result <> <<207>>)
   defp dec(<< 0x7fff2::19, rest::bitstring >>, length, result), do: dec(rest, length - 19, result <> <<208>>)
   defp dec(<< 0x1fffe3::21, rest::bitstring >>, length, result), do: dec(rest, length - 21, result <> <<209>>)

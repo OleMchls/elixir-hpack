@@ -3,12 +3,11 @@ defmodule HPack do
     Implementation of the [HPack](https://http2.github.io/http2-spec/compression.html) protocol, a compression format for efficiently representing HTTP header fields, to be used in HTTP/2.
   """
 
+  @type header :: {String.t, String.t}
+
   use Bitwise
   alias HPack.Huffman
   alias HPack.Table
-
-  @type header :: {String.t, String.t}
-  @type header_block_fragment :: binary
 
   @doc """
   Encodes a list of headers into a `header block fragment` as specified in RFC 7541.
@@ -17,12 +16,11 @@ defmodule HPack do
 
   ## Examples
 
-    iex> {:ok, ctx} = HPack.Table.start_link(1000)
-    iex> HPack.encode([{":method", "GET"}], ctx)
-    << 0b10000010 >>
+      iex> {:ok, ctx} = HPack.Table.start_link(1000)
+      iex> HPack.encode([{":method", "GET"}], ctx)
+      << 0b10000010 >>
 
   """
-  @spec encode([header], Table.t) :: header_block_fragment
   def encode(headers, table) when is_list(headers), do: encode(headers, << >>, table)
 
   defp encode([], hbf, _), do: hbf
@@ -69,12 +67,12 @@ defmodule HPack do
 
   ## Examples
 
-    iex> {:ok, ctx} = HPack.Table.start_link(1000)
-    iex> HPack.decode(<< 0x82 >>, ctx)
-    [{":method", "GET"}]
+      iex> {:ok, ctx} = HPack.Table.start_link(1000)
+      iex> HPack.decode(<< 0x82 >>, ctx)
+      [{":method", "GET"}]
 
   """
-  @spec decode(header_block_fragment, Table.t) :: [header]
+  @spec decode(String.t, pid) :: [header]
   def decode(hbf, table) do
     parse(hbf, [], table)
   end
@@ -130,6 +128,22 @@ defmodule HPack do
 
   #   0   1   2   3   4   5   6   7
   # +---+---+---+---+---+---+---+---+
+  # | 0 | 0 | 0 | 0 |  Index (4+)   |
+  # +---+---+-----------------------+
+  # | H |     Value Length (7+)     |
+  # +---+---------------------------+
+  # | Value String (Length octets)  |
+  # +-------------------------------+
+  # Figure 8: Literal Header Field without Indexing — Indexed Name
+  defp parse(<< 0::4, rest::bitstring >>, headers, table) do
+    { index, rest } = parse_int4(rest)
+    { value, more_headers } = parse_string(rest)
+    { header, _ } = Table.lookup(index, table)
+    parse(more_headers, [{ header, value } | headers], table)
+  end
+
+  #   0   1   2   3   4   5   6   7
+  # +---+---+---+---+---+---+---+---+
   # | 0 | 0 | 0 | 0 |       0       |
   # +---+---+-----------------------+
   # | H |     Name Length (7+)      |
@@ -145,22 +159,6 @@ defmodule HPack do
     { name, rest } = parse_string(rest)
     { value, more_headers } = parse_string(rest)
     parse(more_headers, [{name, value} | headers], table)
-  end
-
-  #   0   1   2   3   4   5   6   7
-  # +---+---+---+---+---+---+---+---+
-  # | 0 | 0 | 0 | 0 |  Index (4+)   |
-  # +---+---+-----------------------+
-  # | H |     Value Length (7+)     |
-  # +---+---------------------------+
-  # | Value String (Length octets)  |
-  # +-------------------------------+
-  # Figure 8: Literal Header Field without Indexing — Indexed Name
-  defp parse(<< 0::4, rest::bitstring >>, headers, table) do
-    { index, rest } = parse_int4(rest)
-    { value, more_headers } = parse_string(rest)
-    { header, _ } = Table.lookup(index, table)
-    parse(more_headers, [{ header, value } | headers], table)
   end
 
   #   0   1   2   3   4   5   6   7

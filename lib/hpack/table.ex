@@ -1,10 +1,4 @@
 defmodule HPack.Table do
-  @moduledoc """
-    Functions to maintain the (de)compression context.
-    Contains the static tables as well as all menagement of the dynamic table.
-  """
-
-  @type t :: pid
 
   @static [
     {":authority", nil},
@@ -70,17 +64,14 @@ defmodule HPack.Table do
     {"www-authenticate", nil}
   ]
 
-  @spec start_link(integer) :: {:ok, t}
   def start_link(max_table_size) do
     Agent.start_link(fn -> %{size: max_table_size, table: []} end)
   end
 
-  @spec lookup(integer, t) :: tuple | nil
   def lookup(idx, table) do
     Enum.at(full_table(table), idx - 1, :none)
   end
 
-  @spec find(String.t, String.t, t) :: {:none} | {:keyindex, integer} | {:fullindex, integer}
   def find(key, value, table) do
     match_on_key_and_value = Enum.find_index(full_table(table), fn({ck, cv}) -> ck == key && cv == value end)
     match_on_key = Enum.find_index(full_table(table), fn({ck, _}) -> ck == key end)
@@ -91,7 +82,6 @@ defmodule HPack.Table do
     end
   end
 
-  @spec add({String.t, String.t}, t) :: :ok
   def add({key, value}, table) do
     Agent.update(table, fn(state) ->
       %{state | table: [ {key, value} | state.table ]}
@@ -99,7 +89,6 @@ defmodule HPack.Table do
     check_size(table)
   end
 
-  @spec resize(integer, t) :: :ok
   def resize(size, table) do
     Agent.update(table, fn(state) ->
       %{state | size: size}
@@ -107,7 +96,6 @@ defmodule HPack.Table do
     check_size(table)
   end
 
-  @spec size(t) :: integer
   def size(table) do
     Agent.get(table, &(calculate_size(&1.table)))
   end

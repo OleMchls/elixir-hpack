@@ -3,13 +3,12 @@ defmodule HPack.Mixfile do
 
   def project do
     [app: :hpack,
-     version: "1.0.2",
+     version: "1.0.0",
      elixir: "~> 1.2",
-     package: package,
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps,
-     dialyzer: [plt_file: ".plts/.local.plt"]]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -21,9 +20,7 @@ defmodule HPack.Mixfile do
 
   defp deps do
     [
-      {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev},
-      {:dialyxir, "~> 0.3.5", only: :dev}
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
