@@ -5,10 +5,10 @@ defmodule HPack.Mixfile do
     [app: :hpack,
      version: "1.0.0",
      elixir: "~> 1.2",
-     package: package,
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   # Configuration for the OTP application
