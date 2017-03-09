@@ -21,7 +21,7 @@ defmodule HPack.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.11", only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev},
       {:dialyxir, "~> 0.3.5", only: :dev}
     ]
   end
