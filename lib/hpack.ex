@@ -17,9 +17,9 @@ defmodule HPack do
 
   ## Examples
 
-    iex> {:ok, ctx} = HPack.Table.start_link(1000)
-    iex> HPack.encode([{":method", "GET"}], ctx)
-    << 0b10000010 >>
+      iex> {:ok, ctx} = HPack.Table.start_link(1000)
+      iex> HPack.encode([{":method", "GET"}], ctx)
+      << 0b10000010 >>
 
   """
   @spec encode([header], Table.t) :: header_block_fragment
@@ -69,9 +69,9 @@ defmodule HPack do
 
   ## Examples
 
-    iex> {:ok, ctx} = HPack.Table.start_link(1000)
-    iex> HPack.decode(<< 0x82 >>, ctx)
-    [{":method", "GET"}]
+      iex> {:ok, ctx} = HPack.Table.start_link(1000)
+      iex> HPack.decode(<< 0x82 >>, ctx)
+      [{":method", "GET"}]
 
   """
   @spec decode(header_block_fragment, Table.t) :: [header]
