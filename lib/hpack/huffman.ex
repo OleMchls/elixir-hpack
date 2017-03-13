@@ -8,7 +8,7 @@ defmodule HPack.Huffman do
 
     Returns the decoded String.
 
-    ## Examples
+### Examples
 
       iex> HPack.Huffman.decode(<< 0x27::6, 0x5::5, 0x28::6, 0x28::6, 0x7::5 >>)
       "hello"
@@ -24,7 +24,7 @@ defmodule HPack.Huffman do
 
     Returns the encoded String.
 
-    ## Examples
+### Examples
 
       iex> HPack.Huffman.encode("hello")
       <<0x9c, 0xb4, 0x50, 0x7f>>

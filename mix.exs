@@ -5,10 +5,10 @@ defmodule HPack.Mixfile do
     [app: :hpack,
      version: "1.0.2",
      elixir: "~> 1.2",
-     package: package,
+     package: package(),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps,
+     deps: deps(),
      dialyzer: [plt_file: ".plts/.local.plt"]]
   end
 
@@ -21,8 +21,7 @@ defmodule HPack.Mixfile do
 
   defp deps do
     [
-      {:earmark, "~> 0.1", only: :dev},
-      {:ex_doc, "~> 0.11", only: :dev},
+      {:ex_doc, "~> 0.15.0", only: :dev},
       {:dialyxir, "~> 0.3.5", only: :dev}
     ]
   end
