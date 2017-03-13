@@ -33,6 +33,7 @@ defmodule HPack.Mixfile do
       Implementation of the [HPack](https://http2.github.io/http2-spec/compression.html) protocol, a compression format for efficiently representing HTTP header fields, to be used in HTTP/2.
       """,
       maintainers: ["Ole Michaelis <Ole.Michaelis@gmail.com>"],
+      links: %{},
       licenses: ["MIT"],
     ]
   end
