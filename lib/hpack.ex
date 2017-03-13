@@ -15,7 +15,7 @@ defmodule HPack do
 
   Returns the `header block fragment`.
 
-  ## Examples
+### Examples
 
       iex> {:ok, ctx} = HPack.Table.start_link(1000)
       iex> HPack.encode([{":method", "GET"}], ctx)
@@ -67,7 +67,7 @@ defmodule HPack do
 
   Returns the decoded headers as a List.
 
-  ## Examples
+  ### Examples
 
       iex> {:ok, ctx} = HPack.Table.start_link(1000)
       iex> HPack.decode(<< 0x82 >>, ctx)
