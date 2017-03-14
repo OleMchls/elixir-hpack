@@ -3,7 +3,7 @@ defmodule HPack.Mixfile do
 
   def project do
     [app: :hpack,
-     version: "1.0.2",
+     version: "1.0.3",
      elixir: "~> 1.2",
      package: package(),
      build_embedded: Mix.env == :prod,
@@ -33,6 +33,7 @@ defmodule HPack.Mixfile do
       Implementation of the [HPack](https://http2.github.io/http2-spec/compression.html) protocol, a compression format for efficiently representing HTTP header fields, to be used in HTTP/2.
       """,
       maintainers: ["Ole Michaelis <Ole.Michaelis@gmail.com>"],
+      links: %{"HPack" => "https://http2.github.io/http2-spec/compression.html"},
       licenses: ["MIT"],
     ]
   end
