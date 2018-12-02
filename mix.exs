@@ -2,14 +2,16 @@ defmodule HPack.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :hpack,
-     version: "1.0.3",
-     elixir: "~> 1.2",
-     package: package(),
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps(),
-     dialyzer: [plt_file: ".plts/.local.plt"]]
+    [
+      app: :hpack,
+      version: "1.0.3",
+      elixir: "~> 1.2",
+      package: package(),
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      deps: deps(),
+      dialyzer: [plt_file: ".plts/.local.plt"]
+    ]
   end
 
   # Configuration for the OTP application
@@ -21,8 +23,8 @@ defmodule HPack.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.15.0", only: :dev},
-      {:dialyxir, "~> 0.3.5", only: :dev}
+      {:ex_doc, "~> 0.19.1", only: :dev},
+      {:dialyxir, "~> 0.5.1", only: :dev}
     ]
   end
 
@@ -34,7 +36,7 @@ defmodule HPack.Mixfile do
       """,
       maintainers: ["Ole Michaelis <Ole.Michaelis@gmail.com>"],
       links: %{"HPack" => "https://http2.github.io/http2-spec/compression.html"},
-      licenses: ["MIT"],
+      licenses: ["MIT"]
     ]
   end
 end
