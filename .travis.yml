@@ -6,11 +6,8 @@ elixir:
 
 cache:
   directories:
-    - .plts
-
-before_script:
-  - "[[ -f .plts/local.plt ]] || mix dialyzer"
+    - ~/.mix
 
 script:
   - mix test
-  - mix dialyzer --check_plt
+  - mix dialyzer
