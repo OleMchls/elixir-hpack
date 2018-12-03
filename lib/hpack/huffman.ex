@@ -307,771 +307,260 @@ defmodule HPack.Huffman do
   defp dec(<<0b1111111::7>>, 7, string), do: string
 
   # static huffman table
-  defp dec(<<0x7FFFFE7::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<244>>)
-
-  defp dec(<<0x7FFFFE8::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<245>>)
-
-  defp dec(<<0x7FFFFE9::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<246>>)
-
-  defp dec(<<0x7FFFFEA::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<247>>)
-
-  defp dec(<<0x7FFFFEB::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<248>>)
-
-  defp dec(<<0xFFFFFFE::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<249>>)
-
-  defp dec(<<0x7FFFFEC::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<250>>)
-
-  defp dec(<<0x7FFFFED::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<251>>)
-
-  defp dec(<<0x7FFFFEE::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<252>>)
-
-  defp dec(<<0x7FFFFEF::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<253>>)
-
-  defp dec(<<0x7FFFFF0::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<254>>)
-
-  defp dec(<<0x3FFFFEE::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<255>>)
-
-  defp dec(<<0x1FFFFED::25, rest::bitstring>>, length, result),
-    do: dec(rest, length - 25, result <> <<207>>)
-
-  defp dec(<<0x7FFF2::19, rest::bitstring>>, length, result),
-    do: dec(rest, length - 19, result <> <<208>>)
-
-  defp dec(<<0x1FFFE3::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<209>>)
-
-  defp dec(<<0x3FFFFE6::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<210>>)
-
-  defp dec(<<0x7FFFFE0::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<211>>)
-
-  defp dec(<<0x7FFFFE1::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<212>>)
-
-  defp dec(<<0x3FFFFE7::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<213>>)
-
-  defp dec(<<0x7FFFFE2::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<214>>)
-
-  defp dec(<<0xFFFFF2::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<215>>)
-
-  defp dec(<<0x1FFFE4::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<216>>)
-
-  defp dec(<<0x1FFFE5::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<217>>)
-
-  defp dec(<<0x3FFFFE8::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<218>>)
-
-  defp dec(<<0x3FFFFE9::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<219>>)
-
-  defp dec(<<0xFFFFFFD::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<220>>)
-
-  defp dec(<<0x7FFFFE3::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<221>>)
-
-  defp dec(<<0x7FFFFE4::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<222>>)
-
-  defp dec(<<0x7FFFFE5::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<223>>)
-
-  defp dec(<<0xFFFEC::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<224>>)
-
-  defp dec(<<0xFFFFF3::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<225>>)
-
-  defp dec(<<0xFFFED::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<226>>)
-
-  defp dec(<<0x1FFFE6::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<227>>)
-
-  defp dec(<<0x3FFFE9::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<228>>)
-
-  defp dec(<<0x1FFFE7::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<229>>)
-
-  defp dec(<<0x1FFFE8::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<230>>)
-
-  defp dec(<<0x7FFFF3::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<231>>)
-
-  defp dec(<<0x3FFFEA::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<232>>)
-
-  defp dec(<<0x3FFFEB::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<233>>)
-
-  defp dec(<<0x1FFFFEE::25, rest::bitstring>>, length, result),
-    do: dec(rest, length - 25, result <> <<234>>)
-
-  defp dec(<<0x1FFFFEF::25, rest::bitstring>>, length, result),
-    do: dec(rest, length - 25, result <> <<235>>)
-
-  defp dec(<<0xFFFFF4::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<236>>)
-
-  defp dec(<<0xFFFFF5::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<237>>)
-
-  defp dec(<<0x3FFFFEA::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<238>>)
-
-  defp dec(<<0x7FFFF4::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<239>>)
-
-  defp dec(<<0x3FFFFEB::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<240>>)
-
-  defp dec(<<0x7FFFFE6::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<241>>)
-
-  defp dec(<<0x3FFFFEC::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<242>>)
-
-  defp dec(<<0x3FFFFED::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<243>>)
-
-  defp dec(<<0x2D::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<117>>)
-
-  defp dec(<<0x77::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<118>>)
-
-  defp dec(<<0x78::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<119>>)
-
-  defp dec(<<0x79::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<120>>)
-
-  defp dec(<<0x7A::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<121>>)
-
-  defp dec(<<0x7B::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<122>>)
-
-  defp dec(<<0x7FFE::15, rest::bitstring>>, length, result),
-    do: dec(rest, length - 15, result <> <<123>>)
-
-  defp dec(<<0x7FC::11, rest::bitstring>>, length, result),
-    do: dec(rest, length - 11, result <> <<124>>)
-
-  defp dec(<<0x3FFD::14, rest::bitstring>>, length, result),
-    do: dec(rest, length - 14, result <> <<125>>)
-
-  defp dec(<<0x1FFD::13, rest::bitstring>>, length, result),
-    do: dec(rest, length - 13, result <> <<126>>)
-
-  defp dec(<<0xFFFFFFC::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<127>>)
-
-  defp dec(<<0xFFFE6::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<128>>)
-
-  defp dec(<<0x3FFFD2::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<129>>)
-
-  defp dec(<<0xFFFE7::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<130>>)
-
-  defp dec(<<0xFFFE8::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<131>>)
-
-  defp dec(<<0x3FFFD3::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<132>>)
-
-  defp dec(<<0x3FFFD4::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<133>>)
-
-  defp dec(<<0x3FFFD5::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<134>>)
-
-  defp dec(<<0x7FFFD9::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<135>>)
-
-  defp dec(<<0x3FFFD6::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<136>>)
-
-  defp dec(<<0x7FFFDA::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<137>>)
-
-  defp dec(<<0x7FFFDB::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<138>>)
-
-  defp dec(<<0x7FFFDC::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<139>>)
-
-  defp dec(<<0x7FFFDD::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<140>>)
-
-  defp dec(<<0x7FFFDE::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<141>>)
-
-  defp dec(<<0xFFFFEB::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<142>>)
-
-  defp dec(<<0x7FFFDF::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<143>>)
-
-  defp dec(<<0xFFFFEC::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<144>>)
-
-  defp dec(<<0xFFFFED::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<145>>)
-
-  defp dec(<<0x3FFFD7::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<146>>)
-
-  defp dec(<<0x7FFFE0::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<147>>)
-
-  defp dec(<<0xFFFFEE::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<148>>)
-
-  defp dec(<<0x7FFFE1::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<149>>)
-
-  defp dec(<<0x7FFFE2::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<150>>)
-
-  defp dec(<<0x7FFFE3::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<151>>)
-
-  defp dec(<<0x7FFFE4::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<152>>)
-
-  defp dec(<<0x1FFFDC::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<153>>)
-
-  defp dec(<<0x3FFFD8::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<154>>)
-
-  defp dec(<<0x7FFFE5::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<155>>)
-
-  defp dec(<<0x3FFFD9::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<156>>)
-
-  defp dec(<<0x7FFFE6::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<157>>)
-
-  defp dec(<<0x7FFFE7::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<158>>)
-
-  defp dec(<<0xFFFFEF::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<159>>)
-
-  defp dec(<<0x3FFFDA::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<160>>)
-
-  defp dec(<<0x1FFFDD::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<161>>)
-
-  defp dec(<<0xFFFE9::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<162>>)
-
-  defp dec(<<0x3FFFDB::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<163>>)
-
-  defp dec(<<0x3FFFDC::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<164>>)
-
-  defp dec(<<0x7FFFE8::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<165>>)
-
-  defp dec(<<0x7FFFE9::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<166>>)
-
-  defp dec(<<0x1FFFDE::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<167>>)
-
-  defp dec(<<0x7FFFEA::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<168>>)
-
-  defp dec(<<0x3FFFDD::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<169>>)
-
-  defp dec(<<0x3FFFDE::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<170>>)
-
-  defp dec(<<0xFFFFF0::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<171>>)
-
-  defp dec(<<0x1FFFDF::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<172>>)
-
-  defp dec(<<0x3FFFDF::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<173>>)
-
-  defp dec(<<0x7FFFEB::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<174>>)
-
-  defp dec(<<0x7FFFEC::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<175>>)
-
-  defp dec(<<0x1FFFE0::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<176>>)
-
-  defp dec(<<0x1FFFE1::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<177>>)
-
-  defp dec(<<0x3FFFE0::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<178>>)
-
-  defp dec(<<0x1FFFE2::21, rest::bitstring>>, length, result),
-    do: dec(rest, length - 21, result <> <<179>>)
-
-  defp dec(<<0x7FFFED::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<180>>)
-
-  defp dec(<<0x3FFFE1::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<181>>)
-
-  defp dec(<<0x7FFFEE::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<182>>)
-
-  defp dec(<<0x7FFFEF::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<183>>)
-
-  defp dec(<<0xFFFEA::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<184>>)
-
-  defp dec(<<0x3FFFE2::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<185>>)
-
-  defp dec(<<0x3FFFE3::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<186>>)
-
-  defp dec(<<0x3FFFE4::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<187>>)
-
-  defp dec(<<0x7FFFF0::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<188>>)
-
-  defp dec(<<0x3FFFE5::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<189>>)
-
-  defp dec(<<0x3FFFE6::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<190>>)
-
-  defp dec(<<0x7FFFF1::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<191>>)
-
-  defp dec(<<0x3FFFFE0::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<192>>)
-
-  defp dec(<<0x3FFFFE1::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<193>>)
-
-  defp dec(<<0xFFFEB::20, rest::bitstring>>, length, result),
-    do: dec(rest, length - 20, result <> <<194>>)
-
-  defp dec(<<0x7FFF1::19, rest::bitstring>>, length, result),
-    do: dec(rest, length - 19, result <> <<195>>)
-
-  defp dec(<<0x3FFFE7::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<196>>)
-
-  defp dec(<<0x7FFFF2::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<197>>)
-
-  defp dec(<<0x3FFFE8::22, rest::bitstring>>, length, result),
-    do: dec(rest, length - 22, result <> <<198>>)
-
-  defp dec(<<0x1FFFFEC::25, rest::bitstring>>, length, result),
-    do: dec(rest, length - 25, result <> <<199>>)
-
-  defp dec(<<0x3FFFFE2::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<200>>)
-
-  defp dec(<<0x3FFFFE3::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<201>>)
-
-  defp dec(<<0x3FFFFE4::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<202>>)
-
-  defp dec(<<0x7FFFFDE::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<203>>)
-
-  defp dec(<<0x7FFFFDF::27, rest::bitstring>>, length, result),
-    do: dec(rest, length - 27, result <> <<204>>)
-
-  defp dec(<<0x3FFFFE5::26, rest::bitstring>>, length, result),
-    do: dec(rest, length - 26, result <> <<205>>)
-
-  defp dec(<<0xFFFFF1::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<206>>)
-
-  defp dec(<<0x1::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<49>>)
-
-  defp dec(<<0x2::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<50>>)
-
-  defp dec(<<0x19::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<51>>)
-
-  defp dec(<<0x1A::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<52>>)
-
-  defp dec(<<0x1B::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<53>>)
-
-  defp dec(<<0x1C::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<54>>)
-
-  defp dec(<<0x1D::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<55>>)
-
-  defp dec(<<0x1E::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<56>>)
-
-  defp dec(<<0x1F::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<57>>)
-
-  defp dec(<<0x5C::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<58>>)
-
-  defp dec(<<0xFB::8, rest::bitstring>>, length, result),
-    do: dec(rest, length - 8, result <> <<59>>)
-
-  defp dec(<<0x7FFC::15, rest::bitstring>>, length, result),
-    do: dec(rest, length - 15, result <> <<60>>)
-
-  defp dec(<<0x20::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<61>>)
-
-  defp dec(<<0xFFB::12, rest::bitstring>>, length, result),
-    do: dec(rest, length - 12, result <> <<62>>)
-
-  defp dec(<<0x3FC::10, rest::bitstring>>, length, result),
-    do: dec(rest, length - 10, result <> <<63>>)
-
-  defp dec(<<0x1FFA::13, rest::bitstring>>, length, result),
-    do: dec(rest, length - 13, result <> <<64>>)
-
-  defp dec(<<0x21::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<65>>)
-
-  defp dec(<<0x5D::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<66>>)
-
-  defp dec(<<0x5E::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<67>>)
-
-  defp dec(<<0x5F::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<68>>)
-
-  defp dec(<<0x60::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<69>>)
-
-  defp dec(<<0x61::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<70>>)
-
-  defp dec(<<0x62::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<71>>)
-
-  defp dec(<<0x63::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<72>>)
-
-  defp dec(<<0x64::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<73>>)
-
-  defp dec(<<0x65::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<74>>)
-
-  defp dec(<<0x66::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<75>>)
-
-  defp dec(<<0x67::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<76>>)
-
-  defp dec(<<0x68::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<77>>)
-
-  defp dec(<<0x69::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<78>>)
-
-  defp dec(<<0x6A::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<79>>)
-
-  defp dec(<<0x6B::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<80>>)
-
-  defp dec(<<0x6C::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<81>>)
-
-  defp dec(<<0x6D::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<82>>)
-
-  defp dec(<<0x6E::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<83>>)
-
-  defp dec(<<0x6F::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<84>>)
-
-  defp dec(<<0x70::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<85>>)
-
-  defp dec(<<0x71::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<86>>)
-
-  defp dec(<<0x72::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<87>>)
-
-  defp dec(<<0xFC::8, rest::bitstring>>, length, result),
-    do: dec(rest, length - 8, result <> <<88>>)
-
-  defp dec(<<0x73::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<89>>)
-
-  defp dec(<<0xFD::8, rest::bitstring>>, length, result),
-    do: dec(rest, length - 8, result <> <<90>>)
-
-  defp dec(<<0x1FFB::13, rest::bitstring>>, length, result),
-    do: dec(rest, length - 13, result <> <<91>>)
-
-  defp dec(<<0x7FFF0::19, rest::bitstring>>, length, result),
-    do: dec(rest, length - 19, result <> <<92>>)
-
-  defp dec(<<0x1FFC::13, rest::bitstring>>, length, result),
-    do: dec(rest, length - 13, result <> <<93>>)
-
-  defp dec(<<0x3FFC::14, rest::bitstring>>, length, result),
-    do: dec(rest, length - 14, result <> <<94>>)
-
-  defp dec(<<0x22::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<95>>)
-
-  defp dec(<<0x7FFD::15, rest::bitstring>>, length, result),
-    do: dec(rest, length - 15, result <> <<96>>)
-
-  defp dec(<<0x3::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<97>>)
-
-  defp dec(<<0x23::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<98>>)
-
-  defp dec(<<0x4::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<99>>)
-
-  defp dec(<<0x24::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<100>>)
-
-  defp dec(<<0x5::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<101>>)
-
-  defp dec(<<0x25::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<102>>)
-
-  defp dec(<<0x26::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<103>>)
-
-  defp dec(<<0x27::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<104>>)
-
-  defp dec(<<0x6::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<105>>)
-
-  defp dec(<<0x74::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<106>>)
-
-  defp dec(<<0x75::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<107>>)
-
-  defp dec(<<0x28::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<108>>)
-
-  defp dec(<<0x29::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<109>>)
-
-  defp dec(<<0x2A::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<110>>)
-
-  defp dec(<<0x7::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<111>>)
-
-  defp dec(<<0x2B::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<112>>)
-
-  defp dec(<<0x76::7, rest::bitstring>>, length, result),
-    do: dec(rest, length - 7, result <> <<113>>)
-
-  defp dec(<<0x2C::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<114>>)
-
-  defp dec(<<0x8::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<115>>)
-
-  defp dec(<<0x9::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<116>>)
-
-  defp dec(<<0x1FF8::13, rest::bitstring>>, length, result),
-    do: dec(rest, length - 13, result <> <<0>>)
-
-  defp dec(<<0x7FFFD8::23, rest::bitstring>>, length, result),
-    do: dec(rest, length - 23, result <> <<1>>)
-
-  defp dec(<<0xFFFFFE2::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<2>>)
-
-  defp dec(<<0xFFFFFE3::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<3>>)
-
-  defp dec(<<0xFFFFFE4::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<4>>)
-
-  defp dec(<<0xFFFFFE5::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<5>>)
-
-  defp dec(<<0xFFFFFE6::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<6>>)
-
-  defp dec(<<0xFFFFFE7::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<7>>)
-
-  defp dec(<<0xFFFFFE8::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<8>>)
-
-  defp dec(<<0xFFFFEA::24, rest::bitstring>>, length, result),
-    do: dec(rest, length - 24, result <> <<9>>)
-
-  defp dec(<<0x3FFFFFFC::30, rest::bitstring>>, length, result),
-    do: dec(rest, length - 30, result <> <<10>>)
-
-  defp dec(<<0xFFFFFE9::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<11>>)
-
-  defp dec(<<0xFFFFFEA::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<12>>)
-
-  defp dec(<<0x3FFFFFFD::30, rest::bitstring>>, length, result),
-    do: dec(rest, length - 30, result <> <<13>>)
-
-  defp dec(<<0xFFFFFEB::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<14>>)
-
-  defp dec(<<0xFFFFFEC::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<15>>)
-
-  defp dec(<<0xFFFFFED::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<16>>)
-
-  defp dec(<<0xFFFFFEE::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<17>>)
-
-  defp dec(<<0xFFFFFEF::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<18>>)
-
-  defp dec(<<0xFFFFFF0::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<19>>)
-
-  defp dec(<<0xFFFFFF1::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<20>>)
-
-  defp dec(<<0xFFFFFF2::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<21>>)
-
-  defp dec(<<0x3FFFFFFE::30, rest::bitstring>>, length, result),
-    do: dec(rest, length - 30, result <> <<22>>)
-
-  defp dec(<<0xFFFFFF3::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<23>>)
-
-  defp dec(<<0xFFFFFF4::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<24>>)
-
-  defp dec(<<0xFFFFFF5::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<25>>)
-
-  defp dec(<<0xFFFFFF6::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<26>>)
-
-  defp dec(<<0xFFFFFF7::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<27>>)
-
-  defp dec(<<0xFFFFFF8::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<28>>)
-
-  defp dec(<<0xFFFFFF9::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<29>>)
-
-  defp dec(<<0xFFFFFFA::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<30>>)
-
-  defp dec(<<0xFFFFFFB::28, rest::bitstring>>, length, result),
-    do: dec(rest, length - 28, result <> <<31>>)
-
-  defp dec(<<0x14::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<32>>)
-
-  defp dec(<<0x3F8::10, rest::bitstring>>, length, result),
-    do: dec(rest, length - 10, result <> <<33>>)
-
-  defp dec(<<0x3F9::10, rest::bitstring>>, length, result),
-    do: dec(rest, length - 10, result <> <<34>>)
-
-  defp dec(<<0xFFA::12, rest::bitstring>>, length, result),
-    do: dec(rest, length - 12, result <> <<35>>)
-
-  defp dec(<<0x1FF9::13, rest::bitstring>>, length, result),
-    do: dec(rest, length - 13, result <> <<36>>)
-
-  defp dec(<<0x15::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<37>>)
-
-  defp dec(<<0xF8::8, rest::bitstring>>, length, result),
-    do: dec(rest, length - 8, result <> <<38>>)
-
-  defp dec(<<0x7FA::11, rest::bitstring>>, length, result),
-    do: dec(rest, length - 11, result <> <<39>>)
-
-  defp dec(<<0x3FA::10, rest::bitstring>>, length, result),
-    do: dec(rest, length - 10, result <> <<40>>)
-
-  defp dec(<<0x3FB::10, rest::bitstring>>, length, result),
-    do: dec(rest, length - 10, result <> <<41>>)
-
-  defp dec(<<0xF9::8, rest::bitstring>>, length, result),
-    do: dec(rest, length - 8, result <> <<42>>)
-
-  defp dec(<<0x7FB::11, rest::bitstring>>, length, result),
-    do: dec(rest, length - 11, result <> <<43>>)
-
-  defp dec(<<0xFA::8, rest::bitstring>>, length, result),
-    do: dec(rest, length - 8, result <> <<44>>)
-
-  defp dec(<<0x16::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<45>>)
-
-  defp dec(<<0x17::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<46>>)
-
-  defp dec(<<0x18::6, rest::bitstring>>, length, result),
-    do: dec(rest, length - 6, result <> <<47>>)
-
-  defp dec(<<0x0::5, rest::bitstring>>, length, result),
-    do: dec(rest, length - 5, result <> <<48>>)
+  defp dec(<<0x7FFFFE7::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<244>>)
+  defp dec(<<0x7FFFFE8::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<245>>)
+  defp dec(<<0x7FFFFE9::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<246>>)
+  defp dec(<<0x7FFFFEA::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<247>>)
+  defp dec(<<0x7FFFFEB::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<248>>)
+  defp dec(<<0xFFFFFFE::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<249>>)
+  defp dec(<<0x7FFFFEC::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<250>>)
+  defp dec(<<0x7FFFFED::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<251>>)
+  defp dec(<<0x7FFFFEE::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<252>>)
+  defp dec(<<0x7FFFFEF::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<253>>)
+  defp dec(<<0x7FFFFF0::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<254>>)
+  defp dec(<<0x3FFFFEE::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<255>>)
+  defp dec(<<0x1FFFFED::25, rest::bitstring>>, length, result), do: dec(rest, length - 25, result <> <<207>>)
+  defp dec(<<0x7FFF2::19, rest::bitstring>>, length, result), do: dec(rest, length - 19, result <> <<208>>)
+  defp dec(<<0x1FFFE3::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<209>>)
+  defp dec(<<0x3FFFFE6::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<210>>)
+  defp dec(<<0x7FFFFE0::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<211>>)
+  defp dec(<<0x7FFFFE1::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<212>>)
+  defp dec(<<0x3FFFFE7::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<213>>)
+  defp dec(<<0x7FFFFE2::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<214>>)
+  defp dec(<<0xFFFFF2::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<215>>)
+  defp dec(<<0x1FFFE4::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<216>>)
+  defp dec(<<0x1FFFE5::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<217>>)
+  defp dec(<<0x3FFFFE8::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<218>>)
+  defp dec(<<0x3FFFFE9::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<219>>)
+  defp dec(<<0xFFFFFFD::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<220>>)
+  defp dec(<<0x7FFFFE3::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<221>>)
+  defp dec(<<0x7FFFFE4::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<222>>)
+  defp dec(<<0x7FFFFE5::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<223>>)
+  defp dec(<<0xFFFEC::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<224>>)
+  defp dec(<<0xFFFFF3::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<225>>)
+  defp dec(<<0xFFFED::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<226>>)
+  defp dec(<<0x1FFFE6::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<227>>)
+  defp dec(<<0x3FFFE9::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<228>>)
+  defp dec(<<0x1FFFE7::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<229>>)
+  defp dec(<<0x1FFFE8::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<230>>)
+  defp dec(<<0x7FFFF3::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<231>>)
+  defp dec(<<0x3FFFEA::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<232>>)
+  defp dec(<<0x3FFFEB::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<233>>)
+  defp dec(<<0x1FFFFEE::25, rest::bitstring>>, length, result), do: dec(rest, length - 25, result <> <<234>>)
+  defp dec(<<0x1FFFFEF::25, rest::bitstring>>, length, result), do: dec(rest, length - 25, result <> <<235>>)
+  defp dec(<<0xFFFFF4::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<236>>)
+  defp dec(<<0xFFFFF5::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<237>>)
+  defp dec(<<0x3FFFFEA::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<238>>)
+  defp dec(<<0x7FFFF4::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<239>>)
+  defp dec(<<0x3FFFFEB::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<240>>)
+  defp dec(<<0x7FFFFE6::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<241>>)
+  defp dec(<<0x3FFFFEC::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<242>>)
+  defp dec(<<0x3FFFFED::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<243>>)
+  defp dec(<<0x2D::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<117>>)
+  defp dec(<<0x77::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<118>>)
+  defp dec(<<0x78::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<119>>)
+  defp dec(<<0x79::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<120>>)
+  defp dec(<<0x7A::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<121>>)
+  defp dec(<<0x7B::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<122>>)
+  defp dec(<<0x7FFE::15, rest::bitstring>>, length, result), do: dec(rest, length - 15, result <> <<123>>)
+  defp dec(<<0x7FC::11, rest::bitstring>>, length, result), do: dec(rest, length - 11, result <> <<124>>)
+  defp dec(<<0x3FFD::14, rest::bitstring>>, length, result), do: dec(rest, length - 14, result <> <<125>>)
+  defp dec(<<0x1FFD::13, rest::bitstring>>, length, result), do: dec(rest, length - 13, result <> <<126>>)
+  defp dec(<<0xFFFFFFC::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<127>>)
+  defp dec(<<0xFFFE6::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<128>>)
+  defp dec(<<0x3FFFD2::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<129>>)
+  defp dec(<<0xFFFE7::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<130>>)
+  defp dec(<<0xFFFE8::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<131>>)
+  defp dec(<<0x3FFFD3::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<132>>)
+  defp dec(<<0x3FFFD4::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<133>>)
+  defp dec(<<0x3FFFD5::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<134>>)
+  defp dec(<<0x7FFFD9::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<135>>)
+  defp dec(<<0x3FFFD6::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<136>>)
+  defp dec(<<0x7FFFDA::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<137>>)
+  defp dec(<<0x7FFFDB::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<138>>)
+  defp dec(<<0x7FFFDC::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<139>>)
+  defp dec(<<0x7FFFDD::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<140>>)
+  defp dec(<<0x7FFFDE::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<141>>)
+  defp dec(<<0xFFFFEB::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<142>>)
+  defp dec(<<0x7FFFDF::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<143>>)
+  defp dec(<<0xFFFFEC::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<144>>)
+  defp dec(<<0xFFFFED::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<145>>)
+  defp dec(<<0x3FFFD7::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<146>>)
+  defp dec(<<0x7FFFE0::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<147>>)
+  defp dec(<<0xFFFFEE::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<148>>)
+  defp dec(<<0x7FFFE1::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<149>>)
+  defp dec(<<0x7FFFE2::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<150>>)
+  defp dec(<<0x7FFFE3::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<151>>)
+  defp dec(<<0x7FFFE4::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<152>>)
+  defp dec(<<0x1FFFDC::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<153>>)
+  defp dec(<<0x3FFFD8::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<154>>)
+  defp dec(<<0x7FFFE5::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<155>>)
+  defp dec(<<0x3FFFD9::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<156>>)
+  defp dec(<<0x7FFFE6::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<157>>)
+  defp dec(<<0x7FFFE7::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<158>>)
+  defp dec(<<0xFFFFEF::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<159>>)
+  defp dec(<<0x3FFFDA::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<160>>)
+  defp dec(<<0x1FFFDD::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<161>>)
+  defp dec(<<0xFFFE9::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<162>>)
+  defp dec(<<0x3FFFDB::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<163>>)
+  defp dec(<<0x3FFFDC::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<164>>)
+  defp dec(<<0x7FFFE8::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<165>>)
+  defp dec(<<0x7FFFE9::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<166>>)
+  defp dec(<<0x1FFFDE::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<167>>)
+  defp dec(<<0x7FFFEA::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<168>>)
+  defp dec(<<0x3FFFDD::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<169>>)
+  defp dec(<<0x3FFFDE::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<170>>)
+  defp dec(<<0xFFFFF0::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<171>>)
+  defp dec(<<0x1FFFDF::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<172>>)
+  defp dec(<<0x3FFFDF::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<173>>)
+  defp dec(<<0x7FFFEB::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<174>>)
+  defp dec(<<0x7FFFEC::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<175>>)
+  defp dec(<<0x1FFFE0::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<176>>)
+  defp dec(<<0x1FFFE1::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<177>>)
+  defp dec(<<0x3FFFE0::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<178>>)
+  defp dec(<<0x1FFFE2::21, rest::bitstring>>, length, result), do: dec(rest, length - 21, result <> <<179>>)
+  defp dec(<<0x7FFFED::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<180>>)
+  defp dec(<<0x3FFFE1::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<181>>)
+  defp dec(<<0x7FFFEE::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<182>>)
+  defp dec(<<0x7FFFEF::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<183>>)
+  defp dec(<<0xFFFEA::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<184>>)
+  defp dec(<<0x3FFFE2::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<185>>)
+  defp dec(<<0x3FFFE3::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<186>>)
+  defp dec(<<0x3FFFE4::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<187>>)
+  defp dec(<<0x7FFFF0::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<188>>)
+  defp dec(<<0x3FFFE5::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<189>>)
+  defp dec(<<0x3FFFE6::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<190>>)
+  defp dec(<<0x7FFFF1::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<191>>)
+  defp dec(<<0x3FFFFE0::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<192>>)
+  defp dec(<<0x3FFFFE1::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<193>>)
+  defp dec(<<0xFFFEB::20, rest::bitstring>>, length, result), do: dec(rest, length - 20, result <> <<194>>)
+  defp dec(<<0x7FFF1::19, rest::bitstring>>, length, result), do: dec(rest, length - 19, result <> <<195>>)
+  defp dec(<<0x3FFFE7::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<196>>)
+  defp dec(<<0x7FFFF2::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<197>>)
+  defp dec(<<0x3FFFE8::22, rest::bitstring>>, length, result), do: dec(rest, length - 22, result <> <<198>>)
+  defp dec(<<0x1FFFFEC::25, rest::bitstring>>, length, result), do: dec(rest, length - 25, result <> <<199>>)
+  defp dec(<<0x3FFFFE2::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<200>>)
+  defp dec(<<0x3FFFFE3::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<201>>)
+  defp dec(<<0x3FFFFE4::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<202>>)
+  defp dec(<<0x7FFFFDE::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<203>>)
+  defp dec(<<0x7FFFFDF::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<204>>)
+  defp dec(<<0x3FFFFE5::26, rest::bitstring>>, length, result), do: dec(rest, length - 26, result <> <<205>>)
+  defp dec(<<0xFFFFF1::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<206>>)
+  defp dec(<<0x1::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<49>>)
+  defp dec(<<0x2::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<50>>)
+  defp dec(<<0x19::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<51>>)
+  defp dec(<<0x1A::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<52>>)
+  defp dec(<<0x1B::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<53>>)
+  defp dec(<<0x1C::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<54>>)
+  defp dec(<<0x1D::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<55>>)
+  defp dec(<<0x1E::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<56>>)
+  defp dec(<<0x1F::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<57>>)
+  defp dec(<<0x5C::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<58>>)
+  defp dec(<<0xFB::8, rest::bitstring>>, length, result), do: dec(rest, length - 8, result <> <<59>>)
+  defp dec(<<0x7FFC::15, rest::bitstring>>, length, result), do: dec(rest, length - 15, result <> <<60>>)
+  defp dec(<<0x20::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<61>>)
+  defp dec(<<0xFFB::12, rest::bitstring>>, length, result), do: dec(rest, length - 12, result <> <<62>>)
+  defp dec(<<0x3FC::10, rest::bitstring>>, length, result), do: dec(rest, length - 10, result <> <<63>>)
+  defp dec(<<0x1FFA::13, rest::bitstring>>, length, result), do: dec(rest, length - 13, result <> <<64>>)
+  defp dec(<<0x21::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<65>>)
+  defp dec(<<0x5D::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<66>>)
+  defp dec(<<0x5E::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<67>>)
+  defp dec(<<0x5F::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<68>>)
+  defp dec(<<0x60::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<69>>)
+  defp dec(<<0x61::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<70>>)
+  defp dec(<<0x62::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<71>>)
+  defp dec(<<0x63::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<72>>)
+  defp dec(<<0x64::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<73>>)
+  defp dec(<<0x65::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<74>>)
+  defp dec(<<0x66::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<75>>)
+  defp dec(<<0x67::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<76>>)
+  defp dec(<<0x68::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<77>>)
+  defp dec(<<0x69::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<78>>)
+  defp dec(<<0x6A::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<79>>)
+  defp dec(<<0x6B::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<80>>)
+  defp dec(<<0x6C::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<81>>)
+  defp dec(<<0x6D::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<82>>)
+  defp dec(<<0x6E::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<83>>)
+  defp dec(<<0x6F::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<84>>)
+  defp dec(<<0x70::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<85>>)
+  defp dec(<<0x71::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<86>>)
+  defp dec(<<0x72::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<87>>)
+  defp dec(<<0xFC::8, rest::bitstring>>, length, result), do: dec(rest, length - 8, result <> <<88>>)
+  defp dec(<<0x73::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<89>>)
+  defp dec(<<0xFD::8, rest::bitstring>>, length, result), do: dec(rest, length - 8, result <> <<90>>)
+  defp dec(<<0x1FFB::13, rest::bitstring>>, length, result), do: dec(rest, length - 13, result <> <<91>>)
+  defp dec(<<0x7FFF0::19, rest::bitstring>>, length, result), do: dec(rest, length - 19, result <> <<92>>)
+  defp dec(<<0x1FFC::13, rest::bitstring>>, length, result), do: dec(rest, length - 13, result <> <<93>>)
+  defp dec(<<0x3FFC::14, rest::bitstring>>, length, result), do: dec(rest, length - 14, result <> <<94>>)
+  defp dec(<<0x22::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<95>>)
+  defp dec(<<0x7FFD::15, rest::bitstring>>, length, result), do: dec(rest, length - 15, result <> <<96>>)
+  defp dec(<<0x3::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<97>>)
+  defp dec(<<0x23::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<98>>)
+  defp dec(<<0x4::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<99>>)
+  defp dec(<<0x24::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<100>>)
+  defp dec(<<0x5::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<101>>)
+  defp dec(<<0x25::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<102>>)
+  defp dec(<<0x26::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<103>>)
+  defp dec(<<0x27::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<104>>)
+  defp dec(<<0x6::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<105>>)
+  defp dec(<<0x74::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<106>>)
+  defp dec(<<0x75::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<107>>)
+  defp dec(<<0x28::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<108>>)
+  defp dec(<<0x29::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<109>>)
+  defp dec(<<0x2A::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<110>>)
+  defp dec(<<0x7::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<111>>)
+  defp dec(<<0x2B::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<112>>)
+  defp dec(<<0x76::7, rest::bitstring>>, length, result), do: dec(rest, length - 7, result <> <<113>>)
+  defp dec(<<0x2C::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<114>>)
+  defp dec(<<0x8::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<115>>)
+  defp dec(<<0x9::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<116>>)
+  defp dec(<<0x1FF8::13, rest::bitstring>>, length, result), do: dec(rest, length - 13, result <> <<0>>)
+  defp dec(<<0x7FFFD8::23, rest::bitstring>>, length, result), do: dec(rest, length - 23, result <> <<1>>)
+  defp dec(<<0xFFFFFE2::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<2>>)
+  defp dec(<<0xFFFFFE3::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<3>>)
+  defp dec(<<0xFFFFFE4::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<4>>)
+  defp dec(<<0xFFFFFE5::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<5>>)
+  defp dec(<<0xFFFFFE6::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<6>>)
+  defp dec(<<0xFFFFFE7::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<7>>)
+  defp dec(<<0xFFFFFE8::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<8>>)
+  defp dec(<<0xFFFFEA::24, rest::bitstring>>, length, result), do: dec(rest, length - 24, result <> <<9>>)
+  defp dec(<<0x3FFFFFFC::30, rest::bitstring>>, length, result), do: dec(rest, length - 30, result <> <<10>>)
+  defp dec(<<0xFFFFFE9::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<11>>)
+  defp dec(<<0xFFFFFEA::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<12>>)
+  defp dec(<<0x3FFFFFFD::30, rest::bitstring>>, length, result), do: dec(rest, length - 30, result <> <<13>>)
+  defp dec(<<0xFFFFFEB::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<14>>)
+  defp dec(<<0xFFFFFEC::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<15>>)
+  defp dec(<<0xFFFFFED::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<16>>)
+  defp dec(<<0xFFFFFEE::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<17>>)
+  defp dec(<<0xFFFFFEF::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<18>>)
+  defp dec(<<0xFFFFFF0::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<19>>)
+  defp dec(<<0xFFFFFF1::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<20>>)
+  defp dec(<<0xFFFFFF2::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<21>>)
+  defp dec(<<0x3FFFFFFE::30, rest::bitstring>>, length, result), do: dec(rest, length - 30, result <> <<22>>)
+  defp dec(<<0xFFFFFF3::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<23>>)
+  defp dec(<<0xFFFFFF4::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<24>>)
+  defp dec(<<0xFFFFFF5::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<25>>)
+  defp dec(<<0xFFFFFF6::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<26>>)
+  defp dec(<<0xFFFFFF7::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<27>>)
+  defp dec(<<0xFFFFFF8::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<28>>)
+  defp dec(<<0xFFFFFF9::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<29>>)
+  defp dec(<<0xFFFFFFA::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<30>>)
+  defp dec(<<0xFFFFFFB::28, rest::bitstring>>, length, result), do: dec(rest, length - 28, result <> <<31>>)
+  defp dec(<<0x14::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<32>>)
+  defp dec(<<0x3F8::10, rest::bitstring>>, length, result), do: dec(rest, length - 10, result <> <<33>>)
+  defp dec(<<0x3F9::10, rest::bitstring>>, length, result), do: dec(rest, length - 10, result <> <<34>>)
+  defp dec(<<0xFFA::12, rest::bitstring>>, length, result), do: dec(rest, length - 12, result <> <<35>>)
+  defp dec(<<0x1FF9::13, rest::bitstring>>, length, result), do: dec(rest, length - 13, result <> <<36>>)
+  defp dec(<<0x15::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<37>>)
+  defp dec(<<0xF8::8, rest::bitstring>>, length, result), do: dec(rest, length - 8, result <> <<38>>)
+  defp dec(<<0x7FA::11, rest::bitstring>>, length, result), do: dec(rest, length - 11, result <> <<39>>)
+  defp dec(<<0x3FA::10, rest::bitstring>>, length, result), do: dec(rest, length - 10, result <> <<40>>)
+  defp dec(<<0x3FB::10, rest::bitstring>>, length, result), do: dec(rest, length - 10, result <> <<41>>)
+  defp dec(<<0xF9::8, rest::bitstring>>, length, result), do: dec(rest, length - 8, result <> <<42>>)
+  defp dec(<<0x7FB::11, rest::bitstring>>, length, result), do: dec(rest, length - 11, result <> <<43>>)
+  defp dec(<<0xFA::8, rest::bitstring>>, length, result), do: dec(rest, length - 8, result <> <<44>>)
+  defp dec(<<0x16::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<45>>)
+  defp dec(<<0x17::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<46>>)
+  defp dec(<<0x18::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<47>>)
+  defp dec(<<0x0::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<48>>)
 end
