@@ -3,7 +3,7 @@ defmodule HPack.RFCSpec.EncodeTest do
   import RFCBinaries
 
   setup do
-    {:ok, table} = HPack.Table.start_link 10000
+    {:ok, table} = HPack.Table.start_link(10000)
     {:ok, table: table}
   end
 
@@ -19,10 +19,10 @@ defmodule HPack.RFCSpec.EncodeTest do
   test "Request Examples with Huffman Coding", %{table: table} do
     # C.4.1 First Request
     headers = [
-      { ":method", "GET" },
-      { ":scheme", "http" },
-      { ":path", "/" },
-      { ":authority", "www.example.com" }
+      {":method", "GET"},
+      {":scheme", "http"},
+      {":path", "/"},
+      {":authority", "www.example.com"}
     ]
 
     assert HPack.encode(headers, table) == ~b(
@@ -32,11 +32,11 @@ defmodule HPack.RFCSpec.EncodeTest do
 
     # C.4.2 Second Request
     headers = [
-      { ":method", "GET" },
-      { ":scheme", "http" },
-      { ":path", "/" },
-      { ":authority", "www.example.com" },
-      { "cache-control", "no-cache" }
+      {":method", "GET"},
+      {":scheme", "http"},
+      {":path", "/"},
+      {":authority", "www.example.com"},
+      {"cache-control", "no-cache"}
     ]
 
     assert HPack.encode(headers, table) == ~b(
@@ -45,11 +45,11 @@ defmodule HPack.RFCSpec.EncodeTest do
 
     # C.4.3 Third Request
     headers = [
-      { ":method", "GET" },
-      { ":scheme", "https" },
-      { ":path", "/index.html" },
-      { ":authority", "www.example.com" },
-      { "custom-key", "custom-value" }
+      {":method", "GET"},
+      {":scheme", "https"},
+      {":path", "/index.html"},
+      {":authority", "www.example.com"},
+      {"custom-key", "custom-value"}
     ]
 
     assert HPack.encode(headers, table) == ~b(
@@ -61,14 +61,14 @@ defmodule HPack.RFCSpec.EncodeTest do
   # C.6 Response Examples with Huffman Coding
   @tag :rfc
   test "Request Examples with Huffman Coding (256 bytes table)", %{table: table} do
-    HPack.Table.resize 256, table
+    HPack.Table.resize(256, table)
 
     # C.6.1 First Response
     headers = [
-      { ":status", "302" },
-      { "cache-control", "private" },
-      { "date", "Mon, 21 Oct 2013 20:13:21 GMT" },
-      { "location", "https://www.example.com" }
+      {":status", "302"},
+      {"cache-control", "private"},
+      {"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+      {"location", "https://www.example.com"}
     ]
 
     assert HPack.encode(headers, table) == ~b/
@@ -80,10 +80,10 @@ defmodule HPack.RFCSpec.EncodeTest do
 
     # C.6.2 Second Response
     headers = [
-      { ":status", "307" },
-      { "cache-control", "private" },
-      { "date", "Mon, 21 Oct 2013 20:13:21 GMT" },
-      { "location", "https://www.example.com" }
+      {":status", "307"},
+      {"cache-control", "private"},
+      {"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
+      {"location", "https://www.example.com"}
     ]
 
     assert HPack.encode(headers, table) == ~b(
@@ -92,12 +92,12 @@ defmodule HPack.RFCSpec.EncodeTest do
 
     # C.6.3 Third Response
     headers = [
-      { ":status", "200" },
-      { "cache-control", "private" },
-      { "date", "Mon, 21 Oct 2013 20:13:22 GMT" },
-      { "location", "https://www.example.com" },
-      { "content-encoding", "gzip" },
-      { "set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1" }
+      {":status", "200"},
+      {"cache-control", "private"},
+      {"date", "Mon, 21 Oct 2013 20:13:22 GMT"},
+      {"location", "https://www.example.com"},
+      {"content-encoding", "gzip"},
+      {"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"}
     ]
 
     assert HPack.encode(headers, table) == ~b/

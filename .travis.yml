@@ -1,15 +1,14 @@
 language: elixir
 
 elixir:
-  - 1.3.2
+  - 1.6
+  - 1.7
 
 cache:
   directories:
-    - .plts
-
-before_script:
-  - "[[ -f .plts/local.plt ]] || mix dialyzer.plt"
+    - ~/.mix
+    - _build/dev
 
 script:
   - mix test
-  - mix dialyzer --check_plt
+  - mix dialyzer

@@ -5,7 +5,7 @@ defmodule HPack.TableTest do
   doctest Table
 
   setup do
-    {:ok, table} = Table.start_link 1_000
+    {:ok, table} = Table.start_link(1_000)
     {:ok, table: table}
   end
 
@@ -29,7 +29,8 @@ defmodule HPack.TableTest do
   test "evict entries on table size change", %{table: table} do
     header = {"some-header", "some-value"}
     Table.add(header, table)
-    Table.resize(0, table) # evict all entries in dynamic table
+    # evict all entries in dynamic table
+    Table.resize(0, table)
     assert :none == Table.lookup(62, table)
   end
 
@@ -46,20 +47,19 @@ defmodule HPack.TableTest do
   end
 
   test "find a key with corresponding value from static table", %{table: table} do
-    assert Table.find(":method", "GET", table) == { :fullindex, 2 }
+    assert Table.find(":method", "GET", table) == {:fullindex, 2}
   end
 
   test "find a key without corresponding value from static table", %{table: table} do
-    assert Table.find("etag", "1e2345678", table) == { :keyindex, 34 }
+    assert Table.find("etag", "1e2345678", table) == {:keyindex, 34}
   end
 
   test "return :none when key not found in table", %{table: table} do
-    assert Table.find("x-something", "some-value", table) == { :none }
+    assert Table.find("x-something", "some-value", table) == {:none}
   end
 
   test "find a key with corresponding value from dynamic table", %{table: table} do
     Table.add({"x-something", "some-value"}, table)
-    assert Table.find("x-something", "some-value", table) == { :fullindex, 62 }
+    assert Table.find("x-something", "some-value", table) == {:fullindex, 62}
   end
-
 end
