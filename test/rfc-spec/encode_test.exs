@@ -3,7 +3,7 @@ defmodule HPack.RFCSpec.EncodeTest do
   import RFCBinaries
 
   setup do
-    {:ok, table} = HPack.Table.start_link(10000)
+    {:ok, table} = HPack.Table.start_link(10_000)
     {:ok, table: table}
   end
 

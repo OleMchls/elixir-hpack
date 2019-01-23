@@ -1,8 +1,8 @@
 language: elixir
 
 elixir:
-  - 1.6
   - 1.7
+  - 1.8
 
 cache:
   directories:
@@ -11,4 +11,5 @@ cache:
 
 script:
   - mix test
+  - mix credo --strict
   - mix dialyzer

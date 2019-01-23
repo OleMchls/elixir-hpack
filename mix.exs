@@ -5,7 +5,7 @@ defmodule HPack.Mixfile do
     [
       app: :hpack,
       version: "1.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       package: package(),
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -23,8 +23,9 @@ defmodule HPack.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, "~> 0.18.0", only: :dev, runtime: false},
-      {:dialyxir, "~> 0.5.1", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.19.0", only: :dev, runtime: false},
+      {:dialyxir, "~> 0.5.1", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end
 
