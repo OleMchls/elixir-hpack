@@ -26,7 +26,7 @@ HPack.decode(<< 0x82 >>, ctx)
 ```elixir
 {:ok, ctx} = HPack.Table.start_link(1000)
 HPack.encode([{":method", "GET"}], ctx)
-# => << 0b10000010 >>
+# => {:ok. << 0b10000010 >>}
 ```
 
 ## Acknowledgements

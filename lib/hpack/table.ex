@@ -75,12 +75,17 @@ defmodule HPack.Table do
     Agent.start_link(fn -> %{size: max_table_size, table: []} end)
   end
 
-  @spec lookup(integer, t) :: tuple | nil
+  @spec lookup(integer, t) :: {:ok, tuple} | {:error, :not_found}
   def lookup(idx, table) do
-    Enum.at(full_table(table), idx - 1, :none)
+    with tuple when not is_nil(tuple) <- Enum.at(full_table(table), idx - 1) do
+      {:ok, tuple}
+    else
+      _ ->
+        {:error, :not_found}
+    end
   end
 
-  @spec find(String.t(), String.t(), t) :: {:none} | {:keyindex, integer} | {:fullindex, integer}
+  @spec find(String.t(), String.t(), t) :: {:error, :not_found} | {:keyindex, integer} | {:fullindex, integer}
   def find(key, value, table) do
     match_on_key_and_value =
       Enum.find_index(full_table(table), fn {ck, cv} -> ck == key && cv == value end)
@@ -90,7 +95,7 @@ defmodule HPack.Table do
     cond do
       match_on_key_and_value != nil -> {:fullindex, match_on_key_and_value + 1}
       match_on_key != nil -> {:keyindex, match_on_key + 1}
-      true -> {:none}
+      true -> {:error, :not_found}
     end
   end
 
@@ -103,14 +108,19 @@ defmodule HPack.Table do
     check_size(table)
   end
 
-  @spec resize(integer, t) :: :ok
-  def resize(size, table) do
+  @spec resize(integer, t, integer | nil) :: :ok | {:error, :decode_error}
+  def resize(size, table, max_size \\ nil)
+
+  def resize(size, table, max_size)
+  when not is_integer(max_size) or size < max_size do
     Agent.update(table, fn state ->
       %{state | size: size}
     end)
 
     check_size(table)
   end
+
+  def resize(_size, _table, _max_size), do: {:error, :decode_error}
 
   @spec size(t) :: integer
   def size(table) do
