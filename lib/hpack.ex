@@ -87,21 +87,32 @@ defmodule HPack do
   @spec decode(header_block_fragment, Table.t(), integer | nil) :: {:ok, [header]} | {:error, :decode_error}
   def decode(hbf, table, max_size \\ nil)
 
-  def decode(hbf, table, max_size) do
-    parse(hbf, [], table, max_size)
+  #   0   1   2   3   4   5   6   7
+  # +---+---+---+---+---+---+---+---+
+  # | 0 | 0 | 1 |   Max size (5+)   |
+  # +---+---------------------------+
+  # Figure 12: Maximum Dynamic Table Size Change
+  def decode(<<0::2, 1::1, rest::bitstring>>, table, max_size) do
+    with {:ok, {size, rest}} <- parse_int5(rest),
+         :ok <- Table.resize(size, table, max_size),
+      do: parse(rest, [], table)
   end
 
-  defp parse(<<>>, headers, _table, _max_size), do: {:ok, Enum.reverse(headers)}
+  def decode(hbf, table, _max_size) do
+    parse(hbf, [], table)
+  end
+
+  defp parse(<<>>, headers, _table), do: {:ok, Enum.reverse(headers)}
 
   #   0   1   2   3   4   5   6   7
   # +---+---+---+---+---+---+---+---+
   # | 1 |        Index (7+)         |
   # +---+---------------------------+
   #  Figure 5: Indexed Header Field
-  defp parse(<<1::1, rest::bitstring>>, headers, table, max_size) do
+  defp parse(<<1::1, rest::bitstring>>, headers, table) do
     with {:ok, {index, rest}} <- parse_int7(rest),
          {:ok, {header, value}} <- Table.lookup(index, table),
-      do: parse(rest, [{header, value} | headers], table, max_size)
+      do: parse(rest, [{header, value} | headers], table)
   end
 
   #   0   1   2   3   4   5   6   7
@@ -117,11 +128,11 @@ defmodule HPack do
   # | Value String (Length octets)  |
   # +-------------------------------+
   # Figure 7: Literal Header Field with Incremental Indexing — New Name
-  defp parse(<<0::1, 1::1, 0::6, rest::binary>>, headers, table, max_size) do
+  defp parse(<<0::1, 1::1, 0::6, rest::binary>>, headers, table) do
     with {:ok, {name, rest}} <- parse_string(rest),
          {:ok, {value, more_headers}} <- parse_string(rest) do
       Table.add({name, value}, table)
-      parse(more_headers, [{name, value} | headers], table, max_size)
+      parse(more_headers, [{name, value} | headers], table)
     end
   end
 
@@ -134,12 +145,12 @@ defmodule HPack do
   # | Value String (Length octets)  |
   # +-------------------------------+
   # Figure 6: Literal Header Field with Incremental Indexing — Indexed Name
-  defp parse(<<0::1, 1::1, rest::bitstring>>, headers, table, max_size) do
+  defp parse(<<0::1, 1::1, rest::bitstring>>, headers, table) do
     with {:ok, {index, rest}} <- parse_int6(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
          {:ok, {header, _}} <- Table.lookup(index, table) do
       Table.add({header, value}, table)
-      parse(more_headers, [{header, value} | headers], table, max_size)
+      parse(more_headers, [{header, value} | headers], table)
     end
   end
 
@@ -156,10 +167,10 @@ defmodule HPack do
   # | Value String (Length octets)  |
   # +-------------------------------+
   # Figure 9: Literal Header Field without Indexing — New Name
-  defp parse(<<0::4, 0::4, rest::binary>>, headers, table, max_size) do
+  defp parse(<<0::4, 0::4, rest::binary>>, headers, table) do
     with {:ok, {name, rest}} <- parse_string(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
-      do: parse(more_headers, [{name, value} | headers], table, max_size)
+      do: parse(more_headers, [{name, value} | headers], table)
   end
 
   #   0   1   2   3   4   5   6   7
@@ -171,11 +182,11 @@ defmodule HPack do
   # | Value String (Length octets)  |
   # +-------------------------------+
   # Figure 8: Literal Header Field without Indexing — Indexed Name
-  defp parse(<<0::4, rest::bitstring>>, headers, table, max_size) do
+  defp parse(<<0::4, rest::bitstring>>, headers, table) do
     with {:ok, {index, rest}} <- parse_int4(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
          {:ok, {header, _}} <- Table.lookup(index, table),
-      do: parse(more_headers, [{header, value} | headers], table, max_size)
+      do: parse(more_headers, [{header, value} | headers], table)
   end
 
   #   0   1   2   3   4   5   6   7
@@ -191,10 +202,10 @@ defmodule HPack do
   # | Value String (Length octets)  |
   # +-------------------------------+
   # Figure 11: Literal Header Field Never Indexed — New Name
-  defp parse(<<0::3, 1::1, 0::4, rest::binary>>, headers, table, max_size) do
+  defp parse(<<0::3, 1::1, 0::4, rest::binary>>, headers, table) do
     with {:ok, {name, rest}} <- parse_string(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
-      do: parse(more_headers, [{name, value} | headers], table, max_size)
+      do: parse(more_headers, [{name, value} | headers], table)
   end
 
   #   0   1   2   3   4   5   6   7
@@ -206,23 +217,14 @@ defmodule HPack do
   # | Value String (Length octets)  |
   # +-------------------------------+
   # Figure 10: Literal Header Field Never Indexed — Indexed Name
-  defp parse(<<0::3, 1::1, rest::bitstring>>, headers, table, max_size) do
+  defp parse(<<0::3, 1::1, rest::bitstring>>, headers, table) do
     with {:ok, {index, rest}} <- parse_int4(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
          {:ok, {header, _}} <- Table.lookup(index, table),
-      do: parse(more_headers, [{header, value} | headers], table, max_size)
+      do: parse(more_headers, [{header, value} | headers], table)
   end
 
-  #   0   1   2   3   4   5   6   7
-  # +---+---+---+---+---+---+---+---+
-  # | 0 | 0 | 1 |   Max size (5+)   |
-  # +---+---------------------------+
-  # Figure 12: Maximum Dynamic Table Size Change
-  defp parse(<<0::2, 1::1, rest::bitstring>>, headers, table, max_size) do
-    with {:ok, {size, rest}} <- parse_int5(rest),
-         :ok <- Table.resize(size, table, max_size),
-      do: parse(rest, headers, table, max_size)
-  end
+  defp parse(_binary, _headers, _table), do: {:error, :decode_error}
 
   defp parse_string(<<0::1, rest::bitstring>>) do
     with {:ok, {length, rest}} <- parse_int7(rest),
