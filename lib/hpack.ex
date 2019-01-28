@@ -57,9 +57,10 @@ defmodule HPack do
   # defp encode_literal_never_indexed(key, value)
 
   defp encode_string(string) do
-    huffman = Huffman.encode(string)
-    length = byte_size(huffman)
-    <<1::1, encode_int7(length)::bitstring, huffman::binary>>
+    with {:ok, huffman} <- Huffman.encode(string) do
+      length = byte_size(huffman)
+      <<1::1, encode_int7(length)::bitstring, huffman::binary>>
+    end
   end
 
   defp encode_int6(i) when i < 0b111111, do: <<i::6>>
@@ -98,8 +99,8 @@ defmodule HPack do
   # +---+---------------------------+
   #  Figure 5: Indexed Header Field
   defp parse(<<1::1, rest::bitstring>>, headers, table, max_size) do
-    {index, rest} = parse_int7(rest)
-    with {:ok, {header, value}} <- Table.lookup(index, table),
+    with {:ok, {index, rest}} <- parse_int7(rest),
+         {:ok, {header, value}} <- Table.lookup(index, table),
       do: parse(rest, [{header, value} | headers], table, max_size)
   end
 
@@ -117,10 +118,11 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 7: Literal Header Field with Incremental Indexing — New Name
   defp parse(<<0::1, 1::1, 0::6, rest::binary>>, headers, table, max_size) do
-    {name, rest} = parse_string(rest)
-    {value, more_headers} = parse_string(rest)
-    Table.add({name, value}, table)
-    parse(more_headers, [{name, value} | headers], table, max_size)
+    with {:ok, {name, rest}} <- parse_string(rest),
+         {:ok, {value, more_headers}} <- parse_string(rest) do
+      Table.add({name, value}, table)
+      parse(more_headers, [{name, value} | headers], table, max_size)
+    end
   end
 
   #  0   1   2   3   4   5   6   7
@@ -133,9 +135,9 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 6: Literal Header Field with Incremental Indexing — Indexed Name
   defp parse(<<0::1, 1::1, rest::bitstring>>, headers, table, max_size) do
-    {index, rest} = parse_int6(rest)
-    {value, more_headers} = parse_string(rest)
-    with {:ok, {header, _}} <- Table.lookup(index, table) do
+    with {:ok, {index, rest}} <- parse_int6(rest),
+         {:ok, {value, more_headers}} <- parse_string(rest),
+         {:ok, {header, _}} <- Table.lookup(index, table) do
       Table.add({header, value}, table)
       parse(more_headers, [{header, value} | headers], table, max_size)
     end
@@ -155,9 +157,9 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 9: Literal Header Field without Indexing — New Name
   defp parse(<<0::4, 0::4, rest::binary>>, headers, table, max_size) do
-    {name, rest} = parse_string(rest)
-    {value, more_headers} = parse_string(rest)
-    parse(more_headers, [{name, value} | headers], table, max_size)
+    with {:ok, {name, rest}} <- parse_string(rest),
+         {:ok, {value, more_headers}} <- parse_string(rest),
+      do: parse(more_headers, [{name, value} | headers], table, max_size)
   end
 
   #   0   1   2   3   4   5   6   7
@@ -170,9 +172,9 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 8: Literal Header Field without Indexing — Indexed Name
   defp parse(<<0::4, rest::bitstring>>, headers, table, max_size) do
-    {index, rest} = parse_int4(rest)
-    {value, more_headers} = parse_string(rest)
-    with {:ok, {header, _}} <- Table.lookup(index, table),
+    with {:ok, {index, rest}} <- parse_int4(rest),
+         {:ok, {value, more_headers}} <- parse_string(rest),
+         {:ok, {header, _}} <- Table.lookup(index, table),
       do: parse(more_headers, [{header, value} | headers], table, max_size)
   end
 
@@ -190,9 +192,9 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 11: Literal Header Field Never Indexed — New Name
   defp parse(<<0::3, 1::1, 0::4, rest::binary>>, headers, table, max_size) do
-    {name, rest} = parse_string(rest)
-    {value, more_headers} = parse_string(rest)
-    parse(more_headers, [{name, value} | headers], table, max_size)
+    with {:ok, {name, rest}} <- parse_string(rest),
+         {:ok, {value, more_headers}} <- parse_string(rest),
+      do: parse(more_headers, [{name, value} | headers], table, max_size)
   end
 
   #   0   1   2   3   4   5   6   7
@@ -205,9 +207,9 @@ defmodule HPack do
   # +-------------------------------+
   # Figure 10: Literal Header Field Never Indexed — Indexed Name
   defp parse(<<0::3, 1::1, rest::bitstring>>, headers, table, max_size) do
-    {index, rest} = parse_int4(rest)
-    {value, more_headers} = parse_string(rest)
-    with {:ok, {header, _}} <- Table.lookup(index, table),
+    with {:ok, {index, rest}} <- parse_int4(rest),
+         {:ok, {value, more_headers}} <- parse_string(rest),
+         {:ok, {header, _}} <- Table.lookup(index, table),
       do: parse(more_headers, [{header, value} | headers], table, max_size)
   end
 
@@ -217,36 +219,44 @@ defmodule HPack do
   # +---+---------------------------+
   # Figure 12: Maximum Dynamic Table Size Change
   defp parse(<<0::2, 1::1, rest::bitstring>>, headers, table, max_size) do
-    {size, rest} = parse_int5(rest)
-    with :ok <- Table.resize(size, table, max_size),
+    with {:ok, {size, rest}} <- parse_int5(rest),
+         :ok <- Table.resize(size, table, max_size),
       do: parse(rest, headers, table, max_size)
   end
 
   defp parse_string(<<0::1, rest::bitstring>>) do
-    {length, rest} = parse_int7(rest)
-    <<value::binary-size(length), rest::binary>> = rest
-    {value, rest}
+    with {:ok, {length, rest}} <- parse_int7(rest),
+          <<value::binary-size(length), rest::binary>> <- rest,
+      do: {:ok, {value, rest}}
   end
 
   defp parse_string(<<1::1, rest::bitstring>>) do
-    {length, rest} = parse_int7(rest)
-    <<value::binary-size(length), rest::binary>> = rest
-    {Huffman.decode(value), rest}
+    with {:ok, {length, rest}} <- parse_int7(rest),
+         <<value::binary-size(length), rest::binary>> <- rest,
+         {:ok, encoded} <- Huffman.decode(value),
+      do: {:ok, {encoded, rest}}
   end
 
+  defp parse_string(_binary), do: {:error, :decode_error}
+
   defp parse_int4(<<0b1111::4, rest::binary>>), do: parse_big_int(rest, 15, 0)
-  defp parse_int4(<<int::4, rest::binary>>), do: {int, rest}
+  defp parse_int4(<<int::4, rest::binary>>), do: {:ok, {int, rest}}
+  defp parse_int4(_binary), do: {:error, :decode_error}
 
   defp parse_int5(<<0b11111::5, rest::binary>>), do: parse_big_int(rest, 31, 0)
-  defp parse_int5(<<int::5, rest::binary>>), do: {int, rest}
+  defp parse_int5(<<int::5, rest::binary>>), do: {:ok, {int, rest}}
+  defp parse_int5(_binary), do: {:error, :decode_error}
 
   defp parse_int6(<<0b111111::6, rest::binary>>), do: parse_big_int(rest, 63, 0)
-  defp parse_int6(<<int::6, rest::binary>>), do: {int, rest}
+  defp parse_int6(<<int::6, rest::binary>>), do: {:ok, {int, rest}}
+  defp parse_int6(_binary), do: {:error, :decode_error}
 
   defp parse_int7(<<0b1111111::7, rest::binary>>), do: parse_big_int(rest, 127, 0)
-  defp parse_int7(<<int::7, rest::binary>>), do: {int, rest}
+  defp parse_int7(<<int::7, rest::binary>>), do: {:ok, {int, rest}}
+  defp parse_int7(_binary), do: {:error, :decode_error}
 
-  defp parse_big_int(<<0::1, value::7, rest::binary>>, int, m), do: {int + (value <<< m), rest}
-
+  defp parse_big_int(<<0::1, value::7, rest::binary>>, int, m), do: {:ok, {int + (value <<< m), rest}}
   defp parse_big_int(<<1::1, value::7, rest::binary>>, int, m), do: parse_big_int(rest, int + (value <<< m), m + 7)
+  defp parse_big_int(_binary, _int, _m), do: {:error, :decode_error}
+
 end

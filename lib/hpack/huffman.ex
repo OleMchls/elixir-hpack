@@ -11,10 +11,10 @@ defmodule HPack.Huffman do
   ### Examples
 
       iex> HPack.Huffman.decode(<< 0x27::6, 0x5::5, 0x28::6, 0x28::6, 0x7::5 >>)
-      "hello"
+      {:ok, "hello"}
 
   """
-  @spec decode(binary) :: String.t()
+  @spec decode(binary) :: {:ok, String.t()} | {:error, :decode_error}
   def decode(encoded) do
     dec(encoded, bit_size(encoded), <<>>)
   end
@@ -27,15 +27,15 @@ defmodule HPack.Huffman do
   ### Examples
 
       iex> HPack.Huffman.encode("hello")
-      <<0x9c, 0xb4, 0x50, 0x7f>>
+      {:ok, <<0x9c, 0xb4, 0x50, 0x7f>>}
   """
-  @spec encode(String.t()) :: binary
+  @spec encode(String.t()) :: {:ok, binary} | {:error, :encode_error}
   def encode(string) do
     enc(string, <<>>)
   end
 
   # eos
-  defp enc(<<>>, <<bin::binary>>), do: bin
+  defp enc(<<>>, <<bin::binary>>), do: {:ok, bin}
   defp enc(<<>>, <<bin::bitstring>>), do: enc(<<>>, <<bin::bitstring, 1::1>>)
 
   # static huffman encoding table
@@ -295,16 +295,17 @@ defmodule HPack.Huffman do
   defp enc(<<46>> <> rest, bin), do: enc(rest, <<bin::bitstring, 0x17::6>>)
   defp enc(<<47>> <> rest, bin), do: enc(rest, <<bin::bitstring, 0x18::6>>)
   defp enc(<<48>> <> rest, bin), do: enc(rest, <<bin::bitstring, 0x0::5>>)
+  defp enc(_string, _binary), do: {:error, :encode_error}
 
   # eos
-  defp dec(_, 0, string), do: string
-  defp dec(<<0b1::1>>, 1, string), do: string
-  defp dec(<<0b11::2>>, 2, string), do: string
-  defp dec(<<0b111::3>>, 3, string), do: string
-  defp dec(<<0b1111::4>>, 4, string), do: string
-  defp dec(<<0b11111::5>>, 5, string), do: string
-  defp dec(<<0b111111::6>>, 6, string), do: string
-  defp dec(<<0b1111111::7>>, 7, string), do: string
+  defp dec(_, 0, string), do: {:ok, string}
+  defp dec(<<0b1::1>>, 1, string), do: {:ok, string}
+  defp dec(<<0b11::2>>, 2, string), do: {:ok, string}
+  defp dec(<<0b111::3>>, 3, string), do: {:ok, string}
+  defp dec(<<0b1111::4>>, 4, string), do: {:ok, string}
+  defp dec(<<0b11111::5>>, 5, string), do: {:ok, string}
+  defp dec(<<0b111111::6>>, 6, string), do: {:ok, string}
+  defp dec(<<0b1111111::7>>, 7, string), do: {:ok, string}
 
   # static huffman table
   defp dec(<<0x7FFFFE7::27, rest::bitstring>>, length, result), do: dec(rest, length - 27, result <> <<244>>)
@@ -563,4 +564,5 @@ defmodule HPack.Huffman do
   defp dec(<<0x17::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<46>>)
   defp dec(<<0x18::6, rest::bitstring>>, length, result), do: dec(rest, length - 6, result <> <<47>>)
   defp dec(<<0x0::5, rest::bitstring>>, length, result), do: dec(rest, length - 5, result <> <<48>>)
+  defp dec(_binary, _length, _result), do: {:error, :decode_error}
 end
