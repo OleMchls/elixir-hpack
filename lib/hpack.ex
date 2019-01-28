@@ -95,7 +95,7 @@ defmodule HPack do
   def decode(<<0::2, 1::1, rest::bitstring>>, table, max_size) do
     with {:ok, {size, rest}} <- parse_int5(rest),
          :ok <- Table.resize(size, table, max_size),
-      do: parse(rest, [], table)
+      do: decode(rest, table, max_size)
   end
 
   def decode(hbf, table, _max_size) do
