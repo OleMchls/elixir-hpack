@@ -77,9 +77,10 @@ defmodule HPack.Table do
 
   @spec lookup(integer, t) :: {:ok, tuple} | {:error, :not_found}
   def lookup(idx, table) do
-    with tuple when not is_nil(tuple) <- Enum.at(full_table(table), idx - 1) do
-      {:ok, tuple}
-    else
+    case Enum.at(full_table(table), idx - 1) do
+      tuple when not is_nil(tuple) ->
+        {:ok, tuple}
+
       _ ->
         {:error, :not_found}
     end
