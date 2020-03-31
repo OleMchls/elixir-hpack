@@ -1,12 +1,11 @@
 language: elixir
 
 otp_release:
-  - 20.3
   - 21.2
 
 elixir:
-  - 1.7
-  - 1.8
+  - 1.9
+  - 1.10
 
 cache:
   directories:
