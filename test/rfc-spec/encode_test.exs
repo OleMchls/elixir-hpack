@@ -11,7 +11,7 @@ defmodule HPack.RFCSpec.EncodeTest do
   @tag :rfc
   test "Indexed Header Field", %{table: table} do
     headers = [{":method", "GET"}]
-    assert HPack.encode(headers, table) == ~b(82 | .)
+    assert HPack.encode(headers, table) == {:ok, ~b(82 | .)}
   end
 
   # C.4 Request Examples with Huffman Coding
@@ -25,10 +25,10 @@ defmodule HPack.RFCSpec.EncodeTest do
       {":authority", "www.example.com"}
     ]
 
-    assert HPack.encode(headers, table) == ~b(
+    assert HPack.encode(headers, table) == {:ok, ~b(
       8286 8441 8cf1 e3c2 e5f2 3a6b a0ab 90f4 | ...A......:k....
       ff                                      | .
-    )
+    )}
 
     # C.4.2 Second Request
     headers = [
@@ -39,9 +39,9 @@ defmodule HPack.RFCSpec.EncodeTest do
       {"cache-control", "no-cache"}
     ]
 
-    assert HPack.encode(headers, table) == ~b(
+    assert HPack.encode(headers, table) == {:ok, ~b(
       8286 84be 5886 a8eb 1064 9cbf           | ....X....d..
-    )
+    )}
 
     # C.4.3 Third Request
     headers = [
@@ -52,10 +52,10 @@ defmodule HPack.RFCSpec.EncodeTest do
       {"custom-key", "custom-value"}
     ]
 
-    assert HPack.encode(headers, table) == ~b(
+    assert HPack.encode(headers, table) == {:ok, ~b(
       8287 85bf 4088 25a8 49e9 5ba9 7d7f 8925 | ....@.%.I.[.}..%
       a849 e95b b8e8 b4bf                     | .I.[....
-    )
+    )}
   end
 
   # C.6 Response Examples with Huffman Coding
@@ -71,12 +71,12 @@ defmodule HPack.RFCSpec.EncodeTest do
       {"location", "https://www.example.com"}
     ]
 
-    assert HPack.encode(headers, table) == ~b/
+    assert HPack.encode(headers, table) == {:ok, ~b/
       4882 6402 5885 aec3 771a 4b61 96d0 7abe | H.d.X...w.Ka..z.
       9410 54d4 44a8 2005 9504 0b81 66e0 82a6 | ..T.D. .....f...
       2d1b ff6e 919d 29ad 1718 63c7 8f0b 97c8 | -..n..)...c.....
       e9ae 82ae 43d3                          | ....C.
-    /
+    /}
 
     # C.6.2 Second Response
     headers = [
@@ -86,9 +86,9 @@ defmodule HPack.RFCSpec.EncodeTest do
       {"location", "https://www.example.com"}
     ]
 
-    assert HPack.encode(headers, table) == ~b(
+    assert HPack.encode(headers, table) == {:ok, ~b(
       4883 640e ffc1 c0bf                     | H.d.....
-    )
+    )}
 
     # C.6.3 Third Response
     headers = [
@@ -100,12 +100,12 @@ defmodule HPack.RFCSpec.EncodeTest do
       {"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"}
     ]
 
-    assert HPack.encode(headers, table) == ~b/
+    assert HPack.encode(headers, table) == {:ok, ~b/
       88c1 6196 d07a be94 1054 d444 a820 0595 | ..a..z...T.D. ..
       040b 8166 e084 a62d 1bff c05a 839b d9ab | ...f...-...Z....
       77ad 94e7 821d d7f2 e6c7 b335 dfdf cd5b | w..........5...[
       3960 d5af 2708 7f36 72c1 ab27 0fb5 291f | 9`..'..6r..'..).
       9587 3160 65c0 03ed 4ee5 b106 3d50 07   | ..1`e...N...=P.
-    /
+    /}
   end
 end
