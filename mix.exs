@@ -31,7 +31,7 @@ defmodule HPack.Mixfile do
 
   defp package do
     [
-      source_url: "https://github.com/nesQuick/elixir-hpack",
+      source_url: "https://github.com/OleMchls/elixir-hpack",
       description: """
       Implementation of the [HPack](https://http2.github.io/http2-spec/compression.html) protocol, a compression format for efficiently representing HTTP header fields, to be used in HTTP/2.
       """,
