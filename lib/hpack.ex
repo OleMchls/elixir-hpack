@@ -22,6 +22,7 @@ defmodule HPack do
 
       iex> ctx = HPack.Table.new(1_000)
       iex> {:ok, table, << 0b10000010 >>} = HPack.encode(ctx, [{":method", "GET"}])
+      {:ok, %HPack.Table{size: 1000, table: []}, <<130>>}
   """
   @spec encode(Table.t(), headers()) ::
           {:ok, Table.t(), header_block_fragment()} | {:error, :encode_error}
@@ -85,6 +86,7 @@ defmodule HPack do
 
       iex> ctx = HPack.Table.new(1_000)
       iex> {:ok, table, [{":method", "GET"}]} = HPack.decode(ctx, << 0x82 >>)
+      {:ok, %HPack.Table{size: 1000, table: []}, [{":method", "GET"}]}
   """
   @spec decode(Table.t(), header_block_fragment, Table.size() | nil) ::
           {:ok, Table.t(), headers()} | {:error, :decode_error}
