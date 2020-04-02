@@ -4,8 +4,6 @@ defmodule HPack.Table do
     Contains the static tables as well as all menagement of the dynamic table.
   """
 
-  @type t :: pid
-
   @static [
     {":authority", nil},
     {":method", "GET"},
@@ -70,28 +68,47 @@ defmodule HPack.Table do
     {"www-authenticate", nil}
   ]
 
-  @spec start_link(integer) :: {:ok, t}
-  def start_link(max_table_size) do
-    Agent.start_link(fn -> %{size: max_table_size, table: []} end)
+  @type size() :: non_neg_integer()
+  @type table() :: list()
+  @type index() :: non_neg_integer()
+  @type t :: %__MODULE__{
+          size: size(),
+          table: table()
+        }
+
+  defstruct size: nil, table: []
+
+  @spec new(size()) :: t()
+  def new(max_table_size) do
+    %__MODULE__{size: max_table_size}
   end
 
-  @spec lookup(integer, t) :: {:ok, tuple} | {:error, :not_found}
-  def lookup(idx, table) do
-    case Enum.at(full_table(table), idx - 1) do
-      tuple when not is_nil(tuple) ->
-        {:ok, tuple}
+  @spec lookup(t(), index()) :: {:ok, HPack.header()} | {:error, :not_found}
+  def lookup(%{table: table}, index) do
+    table
+    |> full_table()
+    |> Enum.at(index - 1)
+    |> case do
+      header when not is_nil(header) ->
+        {:ok, header}
 
       _ ->
         {:error, :not_found}
     end
   end
 
-  @spec find(String.t(), String.t(), t) :: {:error, :not_found} | {:keyindex, integer} | {:fullindex, integer}
-  def find(key, value, table) do
+  @spec find(t(), HPack.name(), HPack.value()) ::
+          {:error, :not_found} | {:keyindex, integer} | {:fullindex, integer}
+  def find(%{table: table}, name, value) do
     match_on_key_and_value =
-      Enum.find_index(full_table(table), fn {ck, cv} -> ck == key && cv == value end)
+      table
+      |> full_table()
+      |> Enum.find_index(fn {ck, cv} -> ck == name && cv == value end)
 
-    match_on_key = Enum.find_index(full_table(table), fn {ck, _} -> ck == key end)
+    match_on_key =
+      table
+      |> full_table()
+      |> Enum.find_index(fn {ck, _} -> ck == name end)
 
     cond do
       match_on_key_and_value != nil -> {:fullindex, match_on_key_and_value + 1}
@@ -100,48 +117,33 @@ defmodule HPack.Table do
     end
   end
 
-  @spec add({String.t(), String.t()}, t) :: :ok
-  def add({key, value}, table) do
-    Agent.update(table, fn state ->
-      %{state | table: [{key, value} | state.table]}
-    end)
-
-    check_size(table)
+  @spec add(t(), HPack.header()) :: {:ok, t()}
+  def add(%{table: table} = context, {key, value}) do
+    {:ok, check_size(%{context | table: [{key, value} | table]})}
   end
 
-  @spec resize(integer, t, integer | nil) :: :ok | {:error, :decode_error}
-  def resize(size, table, max_size \\ nil)
+  @spec resize(t(), size(), size() | nil) :: {:ok, t()} | {:error, :decode_error}
+  def resize(context, size, max_size \\ nil)
 
-  def resize(size, table, max_size)
-  when not is_integer(max_size) or size < max_size do
-    Agent.update(table, fn state ->
-      %{state | size: size}
-    end)
-
-    check_size(table)
+  def resize(context, size, max_size)
+      when not is_integer(max_size) or size < max_size do
+    {:ok, check_size(%{context | size: size})}
   end
 
-  def resize(_size, _table, _max_size), do: {:error, :decode_error}
+  def resize(_context, _size, _max_size), do: {:error, :decode_error}
 
-  @spec size(t) :: integer
-  def size(table) do
-    Agent.get(table, &calculate_size(&1.table))
+  @spec size(t()) :: size()
+  def size(%{table: table}) do
+    calculate_size(table)
   end
 
   # check table size and evict entries when neccessary
-  defp check_size(table_pid) do
-    Agent.update(table_pid, fn %{size: size, table: table} ->
-      new_table = evict(calculate_size(table) > size, table, size)
-      %{size: size, table: new_table}
-    end)
+  defp check_size(%{size: size, table: table} = context) do
+    %{context | size: size, table: evict(calculate_size(table) > size, table, size)}
   end
 
-  defp calculate_size([]), do: 0
-
   defp calculate_size(table) do
-    table
-    |> Enum.map(fn {key, value} -> byte_size(key) + byte_size(value) + 32 end)
-    |> Enum.reduce(fn x, acc -> x + acc end)
+    Enum.reduce(table, 0, fn {key, value}, acc -> acc + byte_size(key) + byte_size(value) + 32 end)
   end
 
   defp evict(true, table, size) do
@@ -151,5 +153,5 @@ defmodule HPack.Table do
 
   defp evict(false, table, _), do: table
 
-  defp full_table(table), do: @static ++ Agent.get(table, & &1.table)
+  defp full_table(table), do: @static ++ table
 end

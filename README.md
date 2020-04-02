@@ -8,7 +8,7 @@ Implementation of the [HPack](https://http2.github.io/http2-spec/compression.htm
 
   ```elixir
   def deps do
-    [{:hpack, "~> 1.0.0"}]
+    [{:hpack, "~> 3.0.0"}]
   end
   ```
 
@@ -17,16 +17,16 @@ The HPack library has a simple interface. You will need two functions:
 
 ### Decoding
 ```elixir
-{:ok, ctx} = HPack.Table.start_link(1000)
-HPack.decode(<< 0x82 >>, ctx)
-# => [{":method", "GET"}]
+ctx = HPack.Table.new(1_000)
+{:ok, table, headers} = HPack.decode(ctx, (<< 0x82 >>)
+# => {:ok, ..., [{":method", "GET"}]}
 ```
 
 ### Encoding
 ```elixir
-{:ok, ctx} = HPack.Table.start_link(1000)
-HPack.encode([{":method", "GET"}], ctx)
-# => {:ok. << 0b10000010 >>}
+ctx = HPack.Table.new(1_000)
+{:ok, table, hbf} = HPack.encode(ctx, [{":method", "GET"}])
+# => {:ok, ..., << 0b10000010 >>}
 ```
 
 ## Acknowledgements
