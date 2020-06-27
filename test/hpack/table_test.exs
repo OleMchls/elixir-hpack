@@ -12,7 +12,7 @@ defmodule HPack.TableTest do
   end
 
   test "resize table to smaller than max size", %{table: table} do
-    assert :ok = Table.resize(500, table, @max_size)
+    assert :ok = Table.resize(@max_size / 2, table, @max_size)
   end
 
   test "resize table to equal to max size", %{table: table} do
