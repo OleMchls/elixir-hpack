@@ -126,7 +126,7 @@ defmodule HPack.Table do
   def resize(context, size, max_size \\ nil)
 
   def resize(context, size, max_size)
-      when not is_integer(max_size) or size < max_size do
+      when not is_integer(max_size) or size <= max_size do
     {:ok, check_size(%{context | size: size})}
   end
 

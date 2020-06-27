@@ -4,8 +4,22 @@ defmodule HPack.TableTest do
   alias HPack.Table
   doctest Table
 
+  @max_size 1_000
+
   setup do
-    {:ok, table: Table.new(1_000)}
+    {:ok, table: Table.new(@max_size)}
+  end
+
+  test "resize table to smaller than max size", %{table: table} do
+    assert {:ok, _table} = Table.resize(table, @max_size / 2, @max_size)
+  end
+
+  test "resize table to equal to max size", %{table: table} do
+    assert {:ok, _table} = Table.resize(table, @max_size, @max_size)
+  end
+
+  test "resize table to larger than max size fails", %{table: table} do
+    assert {:error, :decode_error} = Table.resize(table, @max_size + 1, @max_size)
   end
 
   test "lookp up from static table", %{table: table} do
