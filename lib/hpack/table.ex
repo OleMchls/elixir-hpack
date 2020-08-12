@@ -113,7 +113,7 @@ defmodule HPack.Table do
   def resize(size, table, max_size \\ nil)
 
   def resize(size, table, max_size)
-  when not is_integer(max_size) or size < max_size do
+  when not is_integer(max_size) or size <= max_size do
     Agent.update(table, fn state ->
       %{state | size: size}
     end)
