@@ -11,18 +11,8 @@ defmodule HuffmanTest do
 
   test "decode a sentence" do
     hello_world = <<
-      0x27::6,
-      0x5::5,
-      0x28::6,
-      0x28::6,
-      0x7::5,
-      0x14::6,
-      0x78::7,
-      0x7::5,
-      0x2C::6,
-      0x28::6,
-      0x24::6,
-      0x3F8::10
+      0x27::6, 0x5::5, 0x28::6, 0x28::6, 0x7::5, 0x14::6,
+      0x78::7, 0x7::5, 0x2C::6, 0x28::6, 0x24::6, 0x3F8::10
     >>
 
     assert {:ok, "hello world!"} == Huffman.decode(hello_world)
@@ -30,12 +20,7 @@ defmodule HuffmanTest do
 
   test "decode with padding" do
     hello = <<
-      0x27::6,
-      0x5::5,
-      0x28::6,
-      0x28::6,
-      0x7::5,
-      0b1111::4
+      0x27::6, 0x5::5, 0x28::6, 0x28::6, 0x7::5, 0b1111::4
     >>
 
     assert {:ok, "hello"} == Huffman.decode(hello)
@@ -50,22 +35,9 @@ defmodule HuffmanTest do
   end
 
   test "encode a sentence" do
-    assert Huffman.encode("hello world!") ==
-             {:ok,
-              <<
-                0x27::6,
-                0x5::5,
-                0x28::6,
-                0x28::6,
-                0x7::5,
-                0x14::6,
-                0x78::7,
-                0x7::5,
-                0x2C::6,
-                0x28::6,
-                0x24::6,
-                0x3F8::10,
-                0b111111::6
-              >>}
+    assert Huffman.encode("hello world!") == {:ok, <<
+      0x27::6, 0x5::5, 0x28::6, 0x28::6, 0x7::5, 0x14::6,
+      0x78::7, 0x7::5, 0x2C::6, 0x28::6, 0x24::6, 0x3F8::10, 0b111111::6
+    >>}
   end
 end
