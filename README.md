@@ -30,8 +30,7 @@ The HPack library has a simple interface. You will need two functions:
 
 ```elixir
 {:ok, table, hbf} =
-  1_000
-  |> HPack.Table.new()
+  HPack.Table.new(1_000)
   |> HPack.encode([{":method", "GET"}])
 # => {:ok, ..., << 0b10000010 >>}
 ```
