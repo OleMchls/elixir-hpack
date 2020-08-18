@@ -8,36 +8,42 @@ Implementation of the [HPack](https://http2.github.io/http2-spec/compression.htm
 
   ```elixir
   def deps do
-    [{:hpack, "~> 1.0.0"}]
+    [{:hpack, "~> 3.0.0"}]
   end
   ```
 
 ## Usage
+
 The HPack library has a simple interface. You will need two functions:
 
 ### Decoding
+
 ```elixir
-{:ok, ctx} = HPack.Table.start_link(1000)
+ctx = HPack.Table.new(1000)
 HPack.decode(<< 0x82 >>, ctx)
 # => [{":method", "GET"}]
 ```
 
 ### Encoding
+
 ```elixir
-{:ok, ctx} = HPack.Table.start_link(1000)
+ctx = HPack.Table.new(1000)
 HPack.encode([{":method", "GET"}], ctx)
 # => {:ok. << 0b10000010 >>}
 ```
 
 ## Acknowledgements
+
 The [cowboy hpack implementation](https://github.com/ninenines/cowlib/blob/d0cd6dcb338425a24f85f37ab1ba6d9aeaca89bb/src/cow_hpack.erl#L563) by Loïc Hoguin (@essen) was a great help while writing this library.
 
 ## feature wishes / ideas / contribute
+
 Nice to have:
+
 - transcoding for intermediaries (`never indexed`)
 - handle small tables in a performant way (keep track of headers)
 
-*please write test <3*
+*please write test* <3
 
 ## License
 
