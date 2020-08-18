@@ -16,7 +16,7 @@ defmodule HPack.RFCSpec.DecodeTest do
       746f 6d2d 6865 6164 6572                | tom-header
     )
 
-    assert {:ok, table, [decoded_header | _]} = HPack.decode(table, hbf)
+    assert {:ok, table, [decoded_header | _]} = HPack.decode(hbf, table)
     assert decoded_header == {"custom-key", "custom-header"}
     assert Table.size(table) == 55
   end
@@ -26,7 +26,7 @@ defmodule HPack.RFCSpec.DecodeTest do
   test "Literal Header Field without Indexing", %{table: table} do
     hbf = ~b(040c 2f73 616d 706c 652f 7061 7468      | ../sample/path)
 
-    assert {:ok, table, [decoded_header | _]} = HPack.decode(table, hbf)
+    assert {:ok, table, [decoded_header | _]} = HPack.decode(hbf, table)
     assert decoded_header == {":path", "/sample/path"}
     assert Table.size(table) == 0
   end
@@ -39,7 +39,7 @@ defmodule HPack.RFCSpec.DecodeTest do
       74                                      | t
     )
 
-    assert {:ok, table, [decoded_header | _]} = HPack.decode(table, hbf)
+    assert {:ok, table, [decoded_header | _]} = HPack.decode(hbf, table)
     assert decoded_header == {"password", "secret"}
     assert Table.size(table) == 0
   end
@@ -49,7 +49,7 @@ defmodule HPack.RFCSpec.DecodeTest do
   test "Indexed Header Field", %{table: table} do
     hbf = ~b(82 | .)
 
-    assert {:ok, table, [decoded_header | _]} = HPack.decode(table, hbf)
+    assert {:ok, table, [decoded_header | _]} = HPack.decode(hbf, table)
     assert decoded_header == {":method", "GET"}
     assert Table.size(table) == 0
   end
@@ -69,7 +69,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {":scheme", "http"},
               {":path", "/"},
               {":authority", "www.example.com"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 57
 
@@ -85,7 +85,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {":path", "/"},
               {":authority", "www.example.com"},
               {"cache-control", "no-cache"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 110
 
@@ -102,7 +102,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {":path", "/index.html"},
               {":authority", "www.example.com"},
               {"custom-key", "custom-value"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 164
   end
@@ -122,7 +122,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {":scheme", "http"},
               {":path", "/"},
               {":authority", "www.example.com"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 57
 
@@ -138,7 +138,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {":path", "/"},
               {":authority", "www.example.com"},
               {"cache-control", "no-cache"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 110
 
@@ -155,7 +155,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {":path", "/index.html"},
               {":authority", "www.example.com"},
               {"custom-key", "custom-value"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 164
   end
@@ -163,7 +163,7 @@ defmodule HPack.RFCSpec.DecodeTest do
   # C.5 Response Examples without Huffman Coding
   @tag :rfc
   test "Response Examples without Huffman Coding", %{table: table} do
-    assert {:ok, table} = Table.resize(table, 256)
+    assert {:ok, table} = Table.resize(256, table)
 
     # C.5.1 First Response
     hbf = ~b(
@@ -180,7 +180,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {"cache-control", "private"},
               {"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
               {"location", "https://www.example.com"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 222
 
@@ -195,7 +195,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {"cache-control", "private"},
               {"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
               {"location", "https://www.example.com"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 222
 
@@ -218,7 +218,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {"location", "https://www.example.com"},
               {"content-encoding", "gzip"},
               {"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 215
   end
@@ -226,7 +226,7 @@ defmodule HPack.RFCSpec.DecodeTest do
   # C.6 Response Examples with Huffman Coding
   @tag :rfc
   test "Response Examples with Huffman Coding", %{table: table} do
-    assert {:ok, table} = Table.resize(table, 256)
+    assert {:ok, table} = Table.resize(256, table)
 
     # C.6.1 First Response
     hbf = ~b/
@@ -242,7 +242,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {"cache-control", "private"},
               {"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
               {"location", "https://www.example.com"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 222
 
@@ -257,7 +257,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {"cache-control", "private"},
               {"date", "Mon, 21 Oct 2013 20:13:21 GMT"},
               {"location", "https://www.example.com"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 222
 
@@ -278,7 +278,7 @@ defmodule HPack.RFCSpec.DecodeTest do
               {"location", "https://www.example.com"},
               {"content-encoding", "gzip"},
               {"set-cookie", "foo=ASDJKHQKBZXOQWEOPIUAXQWEOIU; max-age=3600; version=1"}
-            ]} = HPack.decode(table, hbf)
+            ]} = HPack.decode(hbf, table)
 
     assert Table.size(table) == 215
   end

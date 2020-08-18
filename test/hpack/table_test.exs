@@ -11,68 +11,68 @@ defmodule HPack.TableTest do
   end
 
   test "resize table to smaller than max size", %{table: table} do
-    assert {:ok, _table} = Table.resize(table, @max_size / 2, @max_size)
+    assert {:ok, _table} = Table.resize(@max_size / 2, table, @max_size)
   end
 
   test "resize table to equal to max size", %{table: table} do
-    assert {:ok, _table} = Table.resize(table, @max_size, @max_size)
+    assert {:ok, _table} = Table.resize(@max_size, table, @max_size)
   end
 
   test "resize table to larger than max size fails", %{table: table} do
-    assert {:error, :decode_error} = Table.resize(table, @max_size + 1, @max_size)
+    assert {:error, :decode_error} = Table.resize(@max_size + 1, table, @max_size)
   end
 
   test "lookp up from static table", %{table: table} do
-    assert {:ok, {":method", "GET"}} = Table.lookup(table, 2)
+    assert {:ok, {":method", "GET"}} = Table.lookup(2, table)
   end
 
   test "adding to dynamic table", %{table: table} do
     header = {"some-header", "some-value"}
-    assert {:ok, table} = Table.add(table, header)
-    assert {:ok, header} == Table.lookup(table, 62)
+    assert {:ok, table} = Table.add(header, table)
+    assert {:ok, header} == Table.lookup(62, table)
   end
 
   test "adds to dynamic table at the beginning", %{table: table} do
     second_header = {"some-header-2", "some-value-2"}
-    assert {:ok, table} = Table.add(table, {"some-header", "some-value"})
-    assert {:ok, table} = Table.add(table, second_header)
-    assert {:ok, second_header} == Table.lookup(table, 62)
+    assert {:ok, table} = Table.add({"some-header", "some-value"}, table)
+    assert {:ok, table} = Table.add(second_header, table)
+    assert {:ok, second_header} == Table.lookup(62, table)
   end
 
   test "evict entries on table size change", %{table: table} do
     header = {"some-header", "some-value"}
-    assert {:ok, table} = Table.add(table, header)
+    assert {:ok, table} = Table.add(header, table)
     # evict all entries in dynamic table
-    assert {:ok, table} = Table.resize(table, 0)
-    assert {:error, :not_found} == Table.lookup(table, 62)
+    assert {:ok, table} = Table.resize(0, table)
+    assert {:error, :not_found} == Table.lookup(62, table)
   end
 
   test "evict oldest entries when size > table size", %{table: table} do
-    assert {:ok, table} = Table.resize(table, 60)
+    assert {:ok, table} = Table.resize(60, table)
 
     third_header = {"some-header-3", "some-value-3"}
-    assert {:ok, table} = Table.add(table, {"some-header", "some-value"})
-    assert {:ok, table} = Table.add(table, {"some-header-2", "some-value-2"})
-    assert {:ok, table} = Table.add(table, third_header)
+    assert {:ok, table} = Table.add({"some-header", "some-value"}, table)
+    assert {:ok, table} = Table.add({"some-header-2", "some-value-2"}, table)
+    assert {:ok, table} = Table.add(third_header, table)
 
-    assert {:ok, third_header} == Table.lookup(table, 62)
-    assert {:error, :not_found} == Table.lookup(table, 63)
+    assert {:ok, third_header} == Table.lookup(62, table)
+    assert {:error, :not_found} == Table.lookup(63, table)
   end
 
   test "find a key with corresponding value from static table", %{table: table} do
-    assert Table.find(table, ":method", "GET") == {:fullindex, 2}
+    assert Table.find(":method", "GET", table) == {:fullindex, 2}
   end
 
   test "find a key without corresponding value from static table", %{table: table} do
-    assert Table.find(table, "etag", "1e2345678") == {:keyindex, 34}
+    assert Table.find("etag", "1e2345678", table) == {:keyindex, 34}
   end
 
   test "return :none when key not found in table", %{table: table} do
-    assert Table.find(table, "x-something", "some-value") == {:error, :not_found}
+    assert Table.find("x-something", "some-value", table) == {:error, :not_found}
   end
 
   test "find a key with corresponding value from dynamic table", %{table: table} do
-    assert {:ok, table} = Table.add(table, {"x-something", "some-value"})
-    assert Table.find(table, "x-something", "some-value") == {:fullindex, 62}
+    assert {:ok, table} = Table.add({"x-something", "some-value"}, table)
+    assert Table.find("x-something", "some-value", table) == {:fullindex, 62}
   end
 end

@@ -13,7 +13,7 @@ defmodule HPack.RFCSpec.EncodeTest do
   test "Indexed Header Field", %{table: table} do
     headers = [{":method", "GET"}]
     hbf = ~b(82 | .)
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
   end
 
   # C.4 Request Examples with Huffman Coding
@@ -32,7 +32,7 @@ defmodule HPack.RFCSpec.EncodeTest do
       ff                                      | .
     )
 
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
 
     # C.4.2 Second Request
     headers = [
@@ -47,7 +47,7 @@ defmodule HPack.RFCSpec.EncodeTest do
       8286 84be 5886 a8eb 1064 9cbf           | ....X....d..
     )
 
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
 
     # C.4.3 Third Request
     headers = [
@@ -63,13 +63,13 @@ defmodule HPack.RFCSpec.EncodeTest do
       a849 e95b b8e8 b4bf                     | .I.[....
     )
 
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
   end
 
   # C.6 Response Examples with Huffman Coding
   @tag :rfc
   test "Request Examples with Huffman Coding (256 bytes table)", %{table: table} do
-    Table.resize(table, 256)
+    Table.resize(256, table)
 
     # C.6.1 First Response
     headers = [
@@ -86,7 +86,7 @@ defmodule HPack.RFCSpec.EncodeTest do
       e9ae 82ae 43d3                          | ....C.
     /
 
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
 
     # C.6.2 Second Response
     headers = [
@@ -100,7 +100,7 @@ defmodule HPack.RFCSpec.EncodeTest do
       4883 640e ffc1 c0bf                     | H.d.....
     )
 
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
 
     # C.6.3 Third Response
     headers = [
@@ -120,6 +120,6 @@ defmodule HPack.RFCSpec.EncodeTest do
       9587 3160 65c0 03ed 4ee5 b106 3d50 07   | ..1`e...N...=P.
     /
 
-    assert {:ok, table, ^hbf} = HPack.encode(table, headers)
+    assert {:ok, table, ^hbf} = HPack.encode(headers, table)
   end
 end

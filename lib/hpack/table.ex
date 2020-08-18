@@ -71,10 +71,10 @@ defmodule HPack.Table do
   @type size() :: non_neg_integer()
   @type table() :: list()
   @type index() :: non_neg_integer()
-  @type t :: %__MODULE__{
-          size: size(),
-          table: table()
-        }
+  @opaque t :: %__MODULE__{
+            size: size(),
+            table: table()
+          }
 
   defstruct size: nil, table: []
 
@@ -83,8 +83,8 @@ defmodule HPack.Table do
     %__MODULE__{size: max_table_size}
   end
 
-  @spec lookup(t(), index()) :: {:ok, HPack.header()} | {:error, :not_found}
-  def lookup(%{table: table}, index) do
+  @spec lookup(index(), t()) :: {:ok, HPack.header()} | {:error, :not_found}
+  def lookup(index, %{table: table}) do
     table
     |> full_table()
     |> Enum.at(index - 1)
@@ -97,9 +97,9 @@ defmodule HPack.Table do
     end
   end
 
-  @spec find(t(), HPack.name(), HPack.value()) ::
+  @spec find(HPack.name(), HPack.value(), t()) ::
           {:error, :not_found} | {:keyindex, integer} | {:fullindex, integer}
-  def find(%{table: table}, name, value) do
+  def find(name, value, %{table: table}) do
     match_on_key_and_value =
       table
       |> full_table()
@@ -117,25 +117,23 @@ defmodule HPack.Table do
     end
   end
 
-  @spec add(t(), HPack.header()) :: {:ok, t()}
-  def add(%{table: table} = context, {key, value}) do
+  @spec add(HPack.header(), t()) :: {:ok, t()}
+  def add({key, value}, %{table: table} = context) do
     {:ok, check_size(%{context | table: [{key, value} | table]})}
   end
 
-  @spec resize(t(), size(), size() | nil) :: {:ok, t()} | {:error, :decode_error}
-  def resize(context, size, max_size \\ nil)
+  @spec resize(size(), t(), size() | nil) :: {:ok, t()} | {:error, :decode_error}
+  def resize(size, context, max_size \\ nil)
 
-  def resize(context, size, max_size)
+  def resize(size, context, max_size)
       when not is_integer(max_size) or size <= max_size do
     {:ok, check_size(%{context | size: size})}
   end
 
-  def resize(_context, _size, _max_size), do: {:error, :decode_error}
+  def resize(_size, _context, _max_size), do: {:error, :decode_error}
 
   @spec size(t()) :: size()
-  def size(%{table: table}) do
-    calculate_size(table)
-  end
+  def size(%{table: table}), do: calculate_size(table)
 
   # check table size and evict entries when neccessary
   defp check_size(%{size: size, table: table} = context) do

@@ -20,18 +20,19 @@ defmodule HPack do
 
   ### Examples
 
-      iex> {:ok, table, << 0b10000010 >>} = HPack.Table.new(1_000) |> HPack.encode([{":method", "GET"}])
-      {:ok, %HPack.Table{size: 1000, table: []}, <<130>>}
+      iex> ctx = HPack.Table.new(1000)
+      iex> HPack.encode([{":method", "GET"}], ctx)
+      {:ok, %HPack.Table{size: 1000, table: []}, << 0b10000010 >>}
   """
-  @spec encode(Table.t(), headers()) ::
+  @spec encode(headers(), Table.t()) ::
           {:ok, Table.t(), header_block_fragment()} | {:error, :encode_error}
-  def encode(table, headers), do: encode(table, headers, <<>>)
+  def encode(headers, table), do: encode(table, headers, <<>>)
 
   defp encode(table, [], hbf), do: {:ok, table, hbf}
 
   defp encode(table, [{name, value} | headers], hbf) do
     {table, partial} =
-      case Table.find(table, name, value) do
+      case Table.find(name, value, table) do
         {:fullindex, index} -> encode_indexed(table, index)
         {:keyindex, index} -> encode_literal_indexed(table, index, value)
         {:error, :not_found} -> encode_literal_not_indexed(table, name, value)
@@ -40,19 +41,19 @@ defmodule HPack do
     encode(table, headers, hbf <> partial)
   end
 
-  defp encode(_headers, _hbf, _table), do: {:error, :encode_error}
+  defp encode(_table, _headers, _hbf), do: {:error, :encode_error}
 
   defp encode_indexed(table, index), do: {table, <<1::1, encode_int7(index)::bitstring>>}
 
   defp encode_literal_indexed(table, index, value) do
-    with {:ok, {name, _}} <- Table.lookup(table, index),
-         {:ok, table} <- Table.add(table, {name, value}) do
+    with {:ok, {name, _}} <- Table.lookup(index, table),
+         {:ok, table} <- Table.add({name, value}, table) do
       {table, <<0::1, 1::1, encode_int6(index)::bitstring, encode_string(value)::binary>>}
     end
   end
 
   defp encode_literal_not_indexed(table, name, value) do
-    with {:ok, table} <- Table.add(table, {name, value}),
+    with {:ok, table} <- Table.add({name, value}, table),
          do:
            {table,
             <<0::1, 1::1, 0::6, encode_string(name)::binary, encode_string(value)::binary>>}
@@ -83,27 +84,26 @@ defmodule HPack do
 
   ### Examples
 
-      iex> {:ok, table, [{":method", "GET"}]} = HPack.Table.new(1_000) |> HPack.decode(<< 0x82 >>)
+      iex> ctx = HPack.Table.new(1000)
+      iex> HPack.decode(<< 0x82 >>, ctx)
       {:ok, %HPack.Table{size: 1000, table: []}, [{":method", "GET"}]}
   """
-  @spec decode(Table.t(), header_block_fragment, Table.size() | nil) ::
+  @spec decode(header_block_fragment(), Table.t(), Table.size() | nil) ::
           {:ok, Table.t(), headers()} | {:error, :decode_error}
-  def decode(table, hbf, max_size \\ nil)
+  def decode(hbf, table, max_size \\ nil)
 
   #   0   1   2   3   4   5   6   7
   # +---+---+---+---+---+---+---+---+
   # | 0 | 0 | 1 |   Max size (5+)   |
   # +---+---------------------------+
   # Figure 12: Maximum Dynamic Table Size Change
-  def decode(table, <<0::2, 1::1, rest::bitstring>>, max_size) do
+  def decode(<<0::2, 1::1, rest::bitstring>>, table, max_size) do
     with {:ok, {size, rest}} <- parse_int5(rest),
-         {:ok, table} <- Table.resize(table, size, max_size),
-         do: decode(table, rest, max_size)
+         {:ok, table} <- Table.resize(size, table, max_size),
+         do: decode(rest, table, max_size)
   end
 
-  def decode(table, hbf, _max_size) do
-    parse(table, hbf, [])
-  end
+  def decode(hbf, table, _max_size), do: parse(table, hbf, [])
 
   defp parse(table, <<>>, headers), do: {:ok, table, Enum.reverse(headers)}
 
@@ -114,7 +114,7 @@ defmodule HPack do
   #  Figure 5: Indexed Header Field
   defp parse(table, <<1::1, rest::bitstring>>, headers) do
     with {:ok, {index, rest}} <- parse_int7(rest),
-         {:ok, {header, value}} <- Table.lookup(table, index),
+         {:ok, {header, value}} <- Table.lookup(index, table),
          do: parse(table, rest, [{header, value} | headers])
   end
 
@@ -134,7 +134,7 @@ defmodule HPack do
   defp parse(table, <<0::1, 1::1, 0::6, rest::binary>>, headers) do
     with {:ok, {name, rest}} <- parse_string(rest),
          {:ok, {value, more_headers}} <- parse_string(rest) do
-      with {:ok, table} <- Table.add(table, {name, value}),
+      with {:ok, table} <- Table.add({name, value}, table),
            do: parse(table, more_headers, [{name, value} | headers])
     end
   end
@@ -151,8 +151,8 @@ defmodule HPack do
   defp parse(table, <<0::1, 1::1, rest::bitstring>>, headers) do
     with {:ok, {index, rest}} <- parse_int6(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
-         {:ok, {name, _}} <- Table.lookup(table, index),
-         {:ok, table} <- Table.add(table, {name, value}) do
+         {:ok, {name, _}} <- Table.lookup(index, table),
+         {:ok, table} <- Table.add({name, value}, table) do
       parse(table, more_headers, [{name, value} | headers])
     end
   end
@@ -188,7 +188,7 @@ defmodule HPack do
   defp parse(table, <<0::4, rest::bitstring>>, headers) do
     with {:ok, {index, rest}} <- parse_int4(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
-         {:ok, {name, _}} <- Table.lookup(table, index),
+         {:ok, {name, _}} <- Table.lookup(index, table),
          do: parse(table, more_headers, [{name, value} | headers])
   end
 
@@ -223,7 +223,7 @@ defmodule HPack do
   defp parse(table, <<0::3, 1::1, rest::bitstring>>, headers) do
     with {:ok, {index, rest}} <- parse_int4(rest),
          {:ok, {value, more_headers}} <- parse_string(rest),
-         {:ok, {name, _}} <- Table.lookup(table, index),
+         {:ok, {name, _}} <- Table.lookup(index, table),
          do: parse(table, more_headers, [{name, value} | headers])
   end
 

@@ -10,21 +10,21 @@ defmodule HPackTest do
   end
 
   test "decode from static table", %{table: table} do
-    assert {:ok, _table, [{":method", "GET"}]} = HPack.decode(table, <<0x82>>)
+    assert {:ok, _table, [{":method", "GET"}]} = HPack.decode(<<0x82>>, table)
   end
 
   test "decode big number (Index5+)", %{table: table} do
     # make it big enough
-    assert {:ok, table} = Table.resize(table, 1_000_000_000)
+    assert {:ok, table} = Table.resize(1_000_000_000, table)
 
     {:ok, table} =
       Enum.reduce(1..1337, {:ok, table}, fn i, {:ok, table} ->
-        Table.add(table, {"h-#{i}", "v-#{i}"})
+        Table.add({"h-#{i}", "v-#{i}"}, table)
       end)
 
     # Maximum Dynamic Table Size Change header to 1337
     hbf = <<0b00111111, 0b10011010, 0b00001010>>
-    assert {:ok, table, headers} = HPack.decode(table, hbf)
+    assert {:ok, table, headers} = HPack.decode(hbf, table)
 
     assert Table.size(table) <= 1337
     assert headers == []
@@ -34,12 +34,12 @@ defmodule HPackTest do
     super_long_value =
       "very long long value Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam,"
 
-    assert {:ok, _table, hbf} = HPack.encode(table, [{"short-key", super_long_value}])
+    assert {:ok, _table, hbf} = HPack.encode([{"short-key", super_long_value}], table)
 
     decode_table = Table.new(1_000)
 
     assert {:ok, _decode_table, [{"short-key", super_long_value}]} =
-             HPack.decode(decode_table, hbf)
+             HPack.decode(hbf, decode_table)
   end
 
   @doc """
@@ -84,6 +84,6 @@ defmodule HPackTest do
         170, 98, 163, 132, 143, 210, 74, 143>>
 
     table = Table.new(4_096)
-    assert {:ok, _table, [_head | _tail]} = HPack.decode(table, data)
+    assert {:ok, _table, [_head | _tail]} = HPack.decode(data, table)
   end
 end

@@ -19,20 +19,17 @@ The HPack library has a simple interface. You will need two functions:
 ### Decoding
 
 ```elixir
-{:ok, table, headers} =
-  1_000
-  |> HPack.Table.new()
-  |> HPack.decode(<< 0x82 >>)
-# => {:ok, ..., [{":method", "GET"}]}
+ctx = HPack.Table.new(1000)
+HPack.decode(<< 0x82 >>, ctx)
+# => [{":method", "GET"}]
 ```
 
 ### Encoding
 
 ```elixir
-{:ok, table, hbf} =
-  HPack.Table.new(1_000)
-  |> HPack.encode([{":method", "GET"}])
-# => {:ok, ..., << 0b10000010 >>}
+ctx = HPack.Table.new(1000)
+HPack.encode([{":method", "GET"}], ctx)
+# => {:ok. << 0b10000010 >>}
 ```
 
 ## Acknowledgements
