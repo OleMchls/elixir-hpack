@@ -4,7 +4,7 @@ defmodule HPack.Mixfile do
   def project do
     [
       app: :hpack,
-      version: "3.0.0",
+      version: "3.0.1",
       elixir: "~> 1.9",
       package: package(),
       build_embedded: Mix.env() == :prod,
