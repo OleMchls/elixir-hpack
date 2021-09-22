@@ -86,4 +86,35 @@ defmodule HPackTest do
     table = Table.new(4_096)
     assert {:ok, _table, [_head | _tail]} = HPack.decode(data, table)
   end
+
+  @doc """
+  The following dummy input looks like a partially valid Header Blocl Fragment
+
+      << 1, 2, 3 >>
+
+  This translates to
+
+  0000 0001
+  0000 0010
+  0000 0011
+
+  Which matches the HBF structure below, but with an invalid string length:
+
+  #   0   1   2   3   4   5   6   7
+  # +---+---+---+---+---+---+---+---+
+  # | 0 | 0 | 0 | 0 |  Index (4+)   |
+  # +---+---+-----------------------+
+  # | H |     Value Length (7+)     |
+  # +---+---------------------------+
+  # | Value String (Length octets)  |
+  # +-------------------------------+
+  """
+  @tag :regression
+  test "accedentilly partially valid HBF" do
+    data = <<1,2,3>>
+
+    decode_table = Table.new(1_000)
+
+    assert {:error, :decode_error} = HPack.decode(data, decode_table)
+  end
 end

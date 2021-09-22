@@ -103,7 +103,13 @@ defmodule HPack do
          do: decode(rest, table, max_size)
   end
 
-  def decode(hbf, table, _max_size), do: parse(table, hbf, [])
+  def decode(hbf, table, _max_size) do
+    parse(table, hbf, [])
+    |> case do
+      {:ok, _table, _headers} = result -> result
+      _ -> {:error, :decode_error}
+    end
+  end
 
   defp parse(table, <<>>, headers), do: {:ok, table, Enum.reverse(headers)}
 
