@@ -111,7 +111,7 @@ defmodule HPackTest do
   """
   @tag :regression
   test "accedentilly partially valid HBF" do
-    data = <<1,2,3>>
+    data = <<1, 2, 3>>
 
     decode_table = Table.new(1_000)
 
